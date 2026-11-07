@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Trends — DeskSense AI</title>
+  <meta name="description" content="DeskSense AI demo trends: distance, light, temperature and posture through the day and across the week.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body data-page="trends">
+
+  <main id="main" class="bento page">
+
+    <header class="page-hero span-12">
+      <div>
+        <p class="eyebrow" id="trend-date">Trends</p>
+        <h1>How your desk changes through the day.</h1>
+        <p class="sub">
+          Minute-by-minute readings from your desk unit, rolled up into the shapes
+          that matter. Hover any point for the exact value.
+        </p>
+      </div>
+      <div class="hero-meta">
+        <span class="status warn" id="trend-status">2 outside range</span>
+        <span class="chip chip-static">480 readings</span>
+      </div>
+    </header>
+
+    <!-- Distance + posture through the day -->
+    <section class="glass chart-card span-8">
+      <div class="card-head">
+        <div>
+          <h2 class="card-title">Screen distance through the day</h2>
+          <p class="card-sub">Centimetres · preferred 50–70 cm · sampled every 15 minutes</p>
+        </div>
+        <span class="status warn" id="dist-avg">Avg 47 cm</span>
+      </div>
+      <div class="chart-box tall"><canvas id="trend-distance" role="img" aria-label="Line chart of screen distance through the day"></canvas></div>
+      <p class="chart-note" id="dist-note">Distance drifts closer through the afternoon, with a sharper lean-in after 16:00.</p>
+    </section>
+
+    <aside class="span-4 stack">
+      <section class="glass">
+        <div class="card-head">
+          <div><h2 class="card-title">Today in numbers</h2><p class="card-sub">Derived from 480 readings</p></div>
+        </div>
+        <div class="stack-sm">
+          <div class="metric-row"><span class="label">Average distance</span><span class="value" id="m-avg-dist">—</span></div>
+          <div class="metric-row"><span class="label">Closest reading</span><span class="value" id="m-min-dist">—</span></div>
+          <div class="metric-row"><span class="label">Posture score (45 min)</span><span class="value" id="m-posture">—</span></div>
+          <div class="metric-row"><span class="label">Time in good posture</span><span class="value" id="m-good">—</span></div>
+          <div class="metric-row"><span class="label">Breaks taken</span><span class="value" id="m-breaks">—</span></div>
+        </div>
+      </section>
+
+      <section class="glass">
+        <div class="card-head">
+          <div><h2 class="card-title">Comfort balance now</h2><p class="card-sub">Normalised 0–100</p></div>
+        </div>
+        <div class="chart-box"><canvas id="trend-radar" role="img" aria-label="Radar chart of current comfort"></canvas></div>
+      </section>
+    </aside>
+
+    <!-- Environment lines -->
+    <section class="glass chart-card span-6">
+      <div class="card-head">
+        <div>
+          <h2 class="card-title">Light through the day</h2>
+          <p class="card-sub">LDR 0–1023 · preferred minimum 400</p>
+        </div>
+      </div>
+      <div class="chart-box"><canvas id="trend-light" role="img" aria-label="Line chart of ambient light through the day"></canvas></div>
+      <p class="chart-note">A cloudy dip mid-afternoon, then a steady fall as the day ends.</p>
+    </section>
+
+    <section class="glass chart-card span-6">
+      <div class="card-head">
+        <div>
+          <h2 class="card-title">Temperature and humidity</h2>
+          <p class="card-sub">°C and % · preferred 23–27 °C, 40–60 %</p>
+        </div>
+      </div>
+      <div class="chart-box"><canvas id="trend-climate" role="img" aria-label="Line chart of temperature and humidity through the day"></canvas></div>
+      <p class="chart-note">The room warms steadily through the afternoon while humidity falls.</p>
+    </section>
+
+    <!-- Weekly -->
+    <section class="glass chart-card span-12">
+      <div class="card-head">
+        <div>
+          <h2 class="card-title">Weekly desk time</h2>
+          <p class="card-sub">Minutes per day · today highlighted</p>
+        </div>
+        <span class="status good" id="trend-week-status">7 sessions</span>
+      </div>
+      <div class="chart-box"><canvas id="trend-week" role="img" aria-label="Bar chart of desk minutes for the last seven days"></canvas></div>
+    </section>
+
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1"></script>
+  <script src="data/mock.js"></script>
+  <script src="js/charts.js"></script>
+  <script src="js/layout.js"></script>
+  <script>
+    (function () {
+      "use strict";
+      var data = window.DeskSenseData;
+      var d = data.derived;
+      var readings = data.readings;
+
+      function $(id) { return document.getElementById(id); }
+
+      /* sample every 15 minutes */
+      var step = 15;
+      var labels = [];
+      var dist = [];
+      var light = [];
+      var temp = [];
+      var hum = [];
+      for (var i = 0; i < readings.length; i += step) {
+        var r = readings[i];
+        labels.push(r.time);
+        dist.push(r.distance);
+        light.push(r.light);
+        temp.push(r.temp);
+        hum.push(r.humidity);
+      }
+
+      var avgDist = readings.reduce(function (a, r) { return a + r.distance; }, 0) / readings.length;
+      var minDist = readings.reduce(function (a, r) { return Math.min(a, r.distance); }, Infinity);
+
+      $("trend-date").textContent = "Trends · " + data.sessions[data.sessions.length - 1].date;
+      $("dist-avg").textContent = "Avg " + Math.round(avgDist) + " cm";
+      $("m-avg-dist").textContent = Math.round(avgDist) + " cm";
+      $("m-min-dist").textContent = minDist.toFixed(1) + " cm";
+      $("m-posture").textContent = d.postureScore + "/100";
+      $("m-good").textContent = d.goodPosturePct + "%";
+      $("m-breaks").textContent = d.breaksTaken + " of 3";
+
+      window.DeskSenseCharts.line("trend-distance", {
+        labels: labels,
+        datasets: [{ label: "Distance", data: dist, color: "#8B7CC7" }],
+        unit: "cm",
+        xTicks: 8
+      });
+
+      window.DeskSenseCharts.line("trend-light", {
+        labels: labels,
+        datasets: [{ label: "Light", data: light, color: "#F2C46D" }],
+        unit: "",
+        xTicks: 8
+      });
+
+      window.DeskSenseCharts.line("trend-climate", {
+        labels: labels,
+        datasets: [
+          { label: "Temperature", data: temp, color: "#F27C8D" },
+          { label: "Humidity", data: hum, color: "#6FD3A5" }
+        ],
+        unit: "",
+        showLegend: true,
+        xTicks: 8
+      });
+
+      window.DeskSenseCharts.radar("trend-radar", {
+        labels: d.radarLabels,
+        data: d.radarValues,
+        max: 100
+      });
+
+      var barColors = data.sessions.map(function (s) { return s.isToday ? "#8B7CC7" : "rgba(139,124,199,.34)"; });
+      window.DeskSenseCharts.bar("trend-week", {
+        labels: data.sessions.map(function (s) { return s.dateShort; }),
+        data: data.sessions.map(function (s) { return s.durationMin; }),
+        colors: barColors,
+        unit: "min"
+      });
+    })();
+  </script>
+</body>
+</html>

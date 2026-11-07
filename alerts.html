@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Alerts — DeskSense AI</title>
+  <meta name="description" content="DeskSense AI demo alerts: breaks, environment and device notifications.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body data-page="alerts">
+
+  <main id="main" class="bento page">
+
+    <header class="page-hero span-12">
+      <div>
+        <p class="eyebrow" id="alt-date">Alerts</p>
+        <h1>What DeskSense noticed.</h1>
+        <p class="sub">
+          Breaks, environment and device notices. Nothing here changes your room
+          — each one is a suggestion you can act on or dismiss.
+        </p>
+      </div>
+      <div class="hero-meta">
+        <span class="status warn" id="alt-open-count">0 open</span>
+        <span class="chip chip-static">Today</span>
+      </div>
+    </header>
+
+    <section class="span-12">
+      <div class="cluster" data-chip-group id="alt-filters">
+        <button class="chip active" type="button" data-filter="all" aria-pressed="true">All</button>
+        <button class="chip" type="button" data-filter="open" aria-pressed="false">Open</button>
+        <button class="chip" type="button" data-filter="missed" aria-pressed="false">Missed</button>
+        <button class="chip" type="button" data-filter="dismissed" aria-pressed="false">Dismissed</button>
+      </div>
+    </section>
+
+    <section class="span-12 stack" id="alt-list" aria-label="Alert list"></section>
+
+    <section class="glass span-12">
+      <div class="card-head">
+        <div>
+          <h2 class="card-title">Notification preferences</h2>
+          <p class="card-sub">Choose which kinds of alerts you receive</p>
+        </div>
+        <a class="card-link" href="preferences.html" style="margin-top:0">Adjust →</a>
+      </div>
+      <div class="settings-group">
+        <div class="row-pill">
+          <div class="row-main"><span class="row-title">Break reminders</span><span class="row-sub">Movement prompts after long sitting</span></div>
+          <div class="row-side"><button class="toggle on" type="button" role="switch" aria-checked="true" aria-label="Break reminders"></button></div>
+        </div>
+        <div class="row-pill">
+          <div class="row-main"><span class="row-title">Environment notices</span><span class="row-sub">Light, temperature, humidity</span></div>
+          <div class="row-side"><button class="toggle on" type="button" role="switch" aria-checked="true" aria-label="Environment notices"></button></div>
+        </div>
+        <div class="row-pill">
+          <div class="row-main"><span class="row-title">Device notices</span><span class="row-sub">Sensor and connection issues</span></div>
+          <div class="row-side"><button class="toggle on" type="button" role="switch" aria-checked="true" aria-label="Device notices"></button></div>
+        </div>
+        <div class="row-pill">
+          <div class="row-main"><span class="row-title">Daily digest</span><span class="row-sub">One summary at 17:00</span></div>
+          <div class="row-side"><button class="toggle" type="button" role="switch" aria-checked="false" aria-label="Daily digest"></button></div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="data/mock.js"></script>
+  <script src="js/layout.js"></script>
+  <script>
+    (function () {
+      "use strict";
+      var data = window.DeskSenseData;
+      var alerts = data.alerts.map(function (a) { return JSON.parse(JSON.stringify(a)); });
+
+      function $(id) { return document.getElementById(id); }
+      function esc(v) { return String(v).replace(/[&<>"']/g, function (ch) { return { "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[ch]; }); }
+
+      var filter = "all";
+
+      function tone(sev) {
+        return sev === "good" ? "good" : sev === "bad" ? "bad" : "warn";
+      }
+      function catLabel(c) {
+        return c === "break" ? "Break" : c === "environment" ? "Environment" : c === "device" ? "Device" : "Digest";
+      }
+
+      function render() {
+        var list = alerts.filter(function (a) { return filter === "all" || a.status === filter; });
+        var html = list.map(function (a) {
+          return '<article class="glass" style="padding:18px 22px">' +
+            '<div class="spread" style="align-items:flex-start">' +
+              '<div style="min-width:0;flex:1 1 auto">' +
+                '<div class="cluster" style="margin-bottom:6px">' +
+                  '<span class="status ' + tone(a.severity) + '">' + esc(catLabel(a.category)) + '</span>' +
+                  '<span class="muted">' + esc(a.time) + '</span>' +
+                  (a.status === "missed" ? '<span class="status bad">Missed</span>' : '') +
+                  (a.status === "dismissed" ? '<span class="status neutral">Dismissed</span>' : '') +
+                '</div>' +
+                '<h2 class="card-title" style="margin:0 0 4px;font-size:1rem">' + esc(a.title) + '</h2>' +
+                '<p style="margin:0;font-size:.86rem;line-height:1.55;color:var(--text)">' + esc(a.body) + '</p>' +
+              '</div>' +
+              '<div class="cluster" style="flex:0 0 auto">' +
+                (a.status !== "dismissed" ? '<button class="btn ghost small" type="button" data-dismiss="' + esc(a.id) + '">Dismiss</button>' : '') +
+              '</div>' +
+            '</div>' +
+          '</article>';
+        }).join("");
+        if (!html) html = '<p class="chart-note" style="padding:24px;text-align:center">No alerts in this view.</p>';
+        $("alt-list").innerHTML = html;
+
+        var openCount = alerts.filter(function (a) { return a.status === "open"; }).length;
+        $("alt-open-count").textContent = openCount + (openCount === 1 ? " open" : " open");
+      }
+
+      $("alt-filters").addEventListener("click", function (e) {
+        var btn = e.target.closest("[data-filter]");
+        if (!btn) return;
+        filter = btn.getAttribute("data-filter");
+        document.querySelectorAll("#alt-filters [data-filter]").forEach(function (b) {
+          var on = b === btn;
+          b.classList.toggle("active", on);
+          b.setAttribute("aria-pressed", String(on));
+        });
+        render();
+      });
+
+      document.addEventListener("click", function (e) {
+        var btn = e.target.closest("[data-dismiss]");
+        if (!btn) return;
+        var id = btn.getAttribute("data-dismiss");
+        var alert = alerts.filter(function (a) { return a.id === id; })[0];
+        if (alert) { alert.status = "dismissed"; render(); if (window.DeskSenseLayout) window.DeskSenseLayout.toast("<strong>Alert dismissed.</strong>"); }
+      });
+
+      document.querySelectorAll(".toggle").forEach(function (t) {
+        t.addEventListener("click", function () {
+          var on = t.classList.toggle("on");
+          t.setAttribute("aria-checked", String(on));
+        });
+      });
+
+      $("alt-date").textContent = "Alerts · " + data.sessions[data.sessions.length - 1].date;
+      render();
+    })();
+  </script>
+</body>
+</html>

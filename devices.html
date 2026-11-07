@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Devices — DeskSense AI</title>
+  <meta name="description" content="DeskSense AI demo devices: desk unit status, sensors, Wi-Fi and adaptive controls.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body data-page="devices">
+
+  <main id="main" class="bento page">
+
+    <header class="page-hero span-12">
+      <div>
+        <p class="eyebrow" id="dev-date">Devices</p>
+        <h1>Your desk unit.</h1>
+        <p class="sub">
+          One ESP8266 desk unit, five sensors. DeskSense reads from it and
+          suggests changes — it never controls your room on its own.
+        </p>
+      </div>
+      <div class="hero-meta">
+        <span class="status good">Online</span>
+        <span class="chip chip-static">Unit 01</span>
+      </div>
+    </header>
+
+    <section class="glass span-6">
+      <div class="card-head">
+        <div>
+          <h2 class="card-title" id="dev-name">DeskSense Desk Unit</h2>
+          <p class="card-sub" id="dev-model">ESP8266 · Unit 01</p>
+        </div>
+        <span class="status good">Online</span>
+      </div>
+      <div class="stack-sm">
+        <div class="metric-row"><span class="label">Location</span><span class="value" id="dev-loc">Home desk</span></div>
+        <div class="metric-row"><span class="label">Firmware</span><span class="value" id="dev-fw">1.4.2</span></div>
+        <div class="metric-row"><span class="label">Uptime</span><span class="value" id="dev-up">7h 59m</span></div>
+        <div class="metric-row"><span class="label">Last seen</span><span class="value" id="dev-seen">just now</span></div>
+        <div class="metric-row"><span class="label">Wi-Fi</span><span class="value" id="dev-ssid">HomeNet-5G</span></div>
+        <div class="metric-row"><span class="label">Signal</span><span class="value" id="dev-rssi">−58 dBm</span></div>
+        <div class="metric-row"><span class="label">IP address</span><span class="value" id="dev-ip">192.168.1.42</span></div>
+      </div>
+    </section>
+
+    <section class="glass span-6">
+      <div class="card-head">
+        <div>
+          <h2 class="card-title">Sensors</h2>
+          <p class="card-sub">Five readings, once per minute</p>
+        </div>
+      </div>
+      <ul class="sensor-list" id="dev-sensors"></ul>
+      <div class="cluster" style="margin-top:16px">
+        <button class="btn ghost small" type="button" id="dev-recheck">Re-run sensor check</button>
+      </div>
+    </section>
+
+    <section class="glass span-6">
+      <div class="card-head">
+        <div>
+          <h2 class="card-title">Adaptive controls (demo)</h2>
+          <p class="card-sub">Simulated only — never switched automatically</p>
+        </div>
+      </div>
+      <div class="settings-group" id="dev-controls"></div>
+      <p class="chart-note" style="margin-top:12px">DeskSense suggests these in recommendations. You apply or dismiss each one.</p>
+    </section>
+
+    <section class="glass span-6">
+      <div class="card-head">
+        <div>
+          <h2 class="card-title">Hardware notes</h2>
+          <p class="card-sub">What is and is not used</p>
+        </div>
+      </div>
+      <ul class="mark-list yes">
+        <li><span class="mark" aria-hidden="true">✓</span>Ultrasonic distance sensor</li>
+        <li><span class="mark" aria-hidden="true">✓</span>LDR ambient light sensor</li>
+        <li><span class="mark" aria-hidden="true">✓</span>Temperature and humidity sensor</li>
+        <li><span class="mark" aria-hidden="true">✓</span>IR presence sensor</li>
+      </ul>
+      <ul class="mark-list no" style="margin-top:10px">
+        <li><span class="mark" aria-hidden="true">✕</span>No camera, microphone or wearable</li>
+        <li><span class="mark" aria-hidden="true">✕</span>No emotion or face detection</li>
+      </ul>
+    </section>
+
+  </main>
+
+  <script src="data/mock.js"></script>
+  <script src="js/layout.js"></script>
+  <script>
+    (function () {
+      "use strict";
+      var data = window.DeskSenseData;
+      var unit = data.devices[0];
+
+      function $(id) { return document.getElementById(id); }
+      function esc(v) { return String(v).replace(/[&<>"']/g, function (ch) { return { "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[ch]; }); }
+
+      $("dev-name").textContent = unit.name;
+      $("dev-model").textContent = unit.model;
+      $("dev-loc").textContent = unit.location;
+      $("dev-fw").textContent = unit.firmware;
+      $("dev-up").textContent = unit.uptime;
+      $("dev-seen").textContent = unit.lastSeen;
+      $("dev-ssid").textContent = unit.wifi.ssid;
+      $("dev-rssi").textContent = unit.wifi.rssi + " dBm";
+      $("dev-ip").textContent = unit.wifi.ip;
+
+      function renderSensors() {
+        $("dev-sensors").innerHTML = unit.sensors.map(function (s) {
+          return '<li><span class="dot ' + (s.status === "good" ? "" : s.status) + '" aria-hidden="true"></span>' +
+            esc(s.label) + '<span class="val">' + esc(s.value) + "</span></li>";
+        }).join("");
+      }
+      renderSensors();
+
+      $("dev-controls").innerHTML = data.adaptiveControls.map(function (c) {
+        return '<div class="row-pill">' +
+          '<div class="row-main"><span class="row-title">' + esc(c.name) + '</span><span class="row-sub">' + esc(c.detail) + '</span></div>' +
+          '<div class="row-side"><button class="toggle ' + (c.on ? "on" : "") + '" type="button" role="switch" aria-checked="' + c.on + '" aria-label="' + esc(c.name) + '" data-ctrl="' + esc(c.id) + '"></button></div>' +
+        '</div>';
+      }).join("");
+
+      document.addEventListener("click", function (e) {
+        var toggle = e.target.closest("[data-ctrl]");
+        if (toggle) {
+          var on = toggle.classList.toggle("on");
+          toggle.setAttribute("aria-checked", String(on));
+          if (window.DeskSenseLayout) window.DeskSenseLayout.toast(on ? "<strong>Control on.</strong> Still only a suggestion — nothing changes automatically." : "<strong>Control off.</strong>");
+          return;
+        }
+        var recheck = e.target.closest("#dev-recheck");
+        if (recheck) {
+          recheck.disabled = true;
+          recheck.textContent = "Checking…";
+          window.setTimeout(function () {
+            recheck.disabled = false;
+            recheck.textContent = "Re-run sensor check";
+            if (window.DeskSenseLayout) window.DeskSenseLayout.toast("<strong>Sensor check complete.</strong> All five sensors responded.");
+          }, 1100);
+        }
+      });
+
+      $("dev-date").textContent = "Devices · " + data.sessions[data.sessions.length - 1].date;
+    })();
+  </script>
+</body>
+</html>

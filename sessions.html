@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sessions — DeskSense AI</title>
+  <meta name="description" content="DeskSense AI demo sessions: recent working days, durations, breaks and posture scores.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body data-page="sessions">
+
+  <main id="main" class="bento page">
+
+    <header class="page-hero span-12">
+      <div>
+        <p class="eyebrow" id="ses-date">Sessions</p>
+        <h1>Your working days, side by side.</h1>
+        <p class="sub">
+          Each session is one monitored workday: how long you sat, how many breaks
+          you took, and how your posture held up.
+        </p>
+      </div>
+      <div class="hero-meta">
+        <span class="status good" id="ses-status">7 sessions</span>
+        <span class="chip chip-static">Last 7 days</span>
+      </div>
+    </header>
+
+    <section class="glass chart-card span-8">
+      <div class="card-head">
+        <div>
+          <h2 class="card-title">Desk time per day</h2>
+          <p class="card-sub">Minutes · today highlighted</p>
+        </div>
+      </div>
+      <div class="chart-box"><canvas id="ses-bar" role="img" aria-label="Bar chart of desk minutes for the last seven days"></canvas></div>
+    </section>
+
+    <aside class="span-4 stack">
+      <section class="glass">
+        <div class="card-head">
+          <div><h2 class="card-title">This week</h2><p class="card-sub">Averages across 7 sessions</p></div>
+        </div>
+        <div class="stack-sm">
+          <div class="metric-row"><span class="label">Average desk time</span><span class="value" id="w-avg">—</span></div>
+          <div class="metric-row"><span class="label">Average breaks</span><span class="value" id="w-breaks">—</span></div>
+          <div class="metric-row"><span class="label">Best posture day</span><span class="value" id="w-best">—</span></div>
+          <div class="metric-row"><span class="label">Longest session</span><span class="value" id="w-long">—</span></div>
+        </div>
+      </section>
+      <section class="glass">
+        <div class="card-head">
+          <div><h2 class="card-title">Status key</h2></div>
+        </div>
+        <div class="cluster">
+          <span class="status good">Good posture ≥ 78%</span>
+          <span class="status warn">Fair 64–77%</span>
+          <span class="status bad">Needs attention &lt; 64%</span>
+        </div>
+      </section>
+    </aside>
+
+    <section class="span-12 stack" id="ses-list" aria-label="Recent sessions"></section>
+
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1"></script>
+  <script src="data/mock.js"></script>
+  <script src="js/charts.js"></script>
+  <script src="js/layout.js"></script>
+  <script>
+    (function () {
+      "use strict";
+      var data = window.DeskSenseData;
+      var sessions = data.sessions.slice().reverse();
+
+      function $(id) { return document.getElementById(id); }
+      function esc(v) { return String(v).replace(/[&<>"']/g, function (ch) { return { "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[ch]; }); }
+
+      var avgDur = data.sessions.reduce(function (a, s) { return a + s.durationMin; }, 0) / data.sessions.length;
+      var avgBreaks = data.sessions.reduce(function (a, s) { return a + s.breaks; }, 0) / data.sessions.length;
+      var best = data.sessions.reduce(function (a, b) { return b.goodPosturePct > a.goodPosturePct ? b : a; });
+      var longest = data.sessions.reduce(function (a, b) { return b.durationMin > a.durationMin ? b : a; });
+
+      $("ses-date").textContent = "Sessions · " + data.sessions[data.sessions.length - 1].date;
+      $("w-avg").textContent = Math.round(avgDur) + " min";
+      $("w-breaks").textContent = avgBreaks.toFixed(1);
+      $("w-best").textContent = best.dateShort + " · " + best.goodPosturePct + "%";
+      $("w-long").textContent = longest.dateShort + " · " + Math.round(longest.durationMin / 60) + "h " + (longest.durationMin % 60) + "m";
+
+      var list = $("ses-list");
+      list.innerHTML = sessions.map(function (s) {
+        var tone = s.status === "good" ? "good" : s.status === "warn" ? "warn" : "bad";
+        return '<article class="glass">' +
+          '<div class="spread">' +
+            '<div>' +
+              '<p class="eyebrow" style="margin-bottom:2px">' + esc(s.date) + (s.isToday ? " · today" : "") + '</p>' +
+              '<h2 class="card-title" style="margin:0">' + esc(s.start) + ' – ' + esc(s.end) + '</h2>' +
+            '</div>' +
+            '<span class="status ' + tone + '">' + s.goodPosturePct + '% posture</span>' +
+          '</div>' +
+          '<div class="rec-mini-grid" style="margin-top:14px">' +
+            '<div class="rec-mini"><span class="rec-mini-value">' + Math.round(s.durationMin / 60) + 'h ' + (s.durationMin % 60) + 'm</span><span class="rec-mini-label">Desk time</span></div>' +
+            '<div class="rec-mini"><span class="rec-mini-value">' + s.breaks + '</span><span class="rec-mini-label">Breaks</span></div>' +
+            '<div class="rec-mini"><span class="rec-mini-value">' + s.goodPosturePct + '%</span><span class="rec-mini-label">Good posture</span></div>' +
+            '<div class="rec-mini"><span class="rec-mini-value">' + (100 - s.goodPosturePct) + '%</span><span class="rec-mini-label">Out of range</span></div>' +
+          '</div>' +
+        '</article>';
+      }).join("");
+
+      var barColors = data.sessions.map(function (s) { return s.isToday ? "#8B7CC7" : "rgba(139,124,199,.34)"; });
+      window.DeskSenseCharts.bar("ses-bar", {
+        labels: data.sessions.map(function (s) { return s.dateShort; }),
+        data: data.sessions.map(function (s) { return s.durationMin; }),
+        colors: barColors,
+        unit: "min"
+      });
+    })();
+  </script>
+</body>
+</html>

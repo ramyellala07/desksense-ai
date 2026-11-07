@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Preferences — DeskSense AI</title>
+  <meta name="description" content="DeskSense AI demo preferences: comfort ranges, break reminders, notifications and adaptive controls.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body data-page="preferences">
+
+  <main id="main" class="bento page">
+
+    <header class="page-hero span-12">
+      <div>
+        <p class="eyebrow" id="pref-date">Preferences</p>
+        <h1>Your comfort settings.</h1>
+        <p class="sub">
+          Suggestions only fire when a reading leaves these ranges. Everything
+          here can be changed at any time.
+        </p>
+      </div>
+      <div class="hero-meta">
+        <span class="status good">Saved locally</span>
+        <span class="chip chip-static">Demo data</span>
+      </div>
+    </header>
+
+    <!-- Comfort ranges -->
+    <section class="glass span-8">
+      <div class="card-head">
+        <div><h2 class="card-title">Comfort ranges</h2><p class="card-sub">Readings outside these trigger a suggestion</p></div>
+      </div>
+
+      <div class="setup-field">
+        <div class="setup-field-head">
+          <span class="field-title">Screen distance</span>
+          <span class="field-value" id="dist-out">50–70 cm</span>
+        </div>
+        <div class="field-row"><span>Closest</span><input type="range" id="pref-dist-min" min="40" max="65" step="5" value="50" aria-label="Closest comfortable screen distance"></div>
+        <div class="field-row"><span>Furthest</span><input type="range" id="pref-dist-max" min="55" max="90" step="5" value="70" aria-label="Furthest comfortable screen distance"></div>
+      </div>
+
+      <div class="setup-field" style="margin-top:14px">
+        <div class="setup-field-head">
+          <span class="field-title">Temperature</span>
+          <span class="field-value" id="temp-out">23–27 °C</span>
+        </div>
+        <div class="field-row"><span>Coolest</span><input type="range" id="pref-temp-min" min="20" max="26" step="1" value="23" aria-label="Coolest comfortable temperature"></div>
+        <div class="field-row"><span>Warmest</span><input type="range" id="pref-temp-max" min="25" max="30" step="1" value="27" aria-label="Warmest comfortable temperature"></div>
+      </div>
+
+      <div class="setup-field" style="margin-top:14px">
+        <div class="setup-field-head">
+          <span class="field-title">Humidity</span>
+          <span class="field-value" id="hum-out">40–60 %</span>
+        </div>
+        <div class="field-row"><span>Driest</span><input type="range" id="pref-hum-min" min="20" max="45" step="5" value="40" aria-label="Lowest comfortable humidity"></div>
+        <div class="field-row"><span>Most humid</span><input type="range" id="pref-hum-max" min="50" max="75" step="5" value="60" aria-label="Highest comfortable humidity"></div>
+      </div>
+
+      <div class="setup-field" style="margin-top:14px">
+        <div class="setup-field-head">
+          <span class="field-title">Break reminder</span>
+          <span class="field-value" id="break-out">50 min</span>
+        </div>
+        <div class="field-row"><span>After</span><input type="range" id="pref-break" min="30" max="90" step="5" value="50" aria-label="Minutes of sitting before a break reminder"></div>
+      </div>
+
+      <div class="setup-field" style="margin-top:14px">
+        <div class="setup-field-head">
+          <span class="field-title">Lighting preference</span>
+        </div>
+        <div class="segmented" role="group" aria-label="Lighting preference">
+          <button type="button" class="active" data-light="Warm" aria-pressed="true">Warm</button>
+          <button type="button" data-light="Neutral" aria-pressed="false">Neutral</button>
+          <button type="button" data-light="Cool" aria-pressed="false">Cool</button>
+        </div>
+      </div>
+    </section>
+
+    <aside class="span-4 stack">
+      <section class="glass">
+        <div class="card-head">
+          <div><h2 class="card-title">Summary</h2><p class="card-sub">What DeskSense will flag</p></div>
+        </div>
+        <p class="setup-note" id="pref-summary"></p>
+        <div class="cluster" style="margin-top:14px">
+          <button class="btn small" type="button" id="pref-save">Save changes</button>
+        </div>
+      </section>
+
+      <section class="glass">
+        <div class="card-head">
+          <div><h2 class="card-title">Monitoring</h2><p class="card-sub">When readings are stored</p></div>
+        </div>
+        <div class="stack-sm">
+          <div class="metric-row">
+            <span class="label">Schedule</span>
+            <span class="value">09:00 – 17:00</span>
+          </div>
+          <div class="metric-row">
+            <span class="label">Pause outside hours</span>
+            <span class="value">On</span>
+          </div>
+          <div class="metric-row">
+            <span class="label">Monitoring</span>
+            <span class="value text-good">Enabled</span>
+          </div>
+        </div>
+        <a class="card-link" href="privacy.html">Privacy details →</a>
+      </section>
+    </aside>
+
+    <!-- Notifications -->
+    <section class="glass span-6">
+      <div class="card-head">
+        <div><h2 class="card-title">Notifications</h2><p class="card-sub">Choose what interrupts you</p></div>
+      </div>
+      <div class="settings-group">
+        <div class="row-pill">
+          <div class="row-main"><span class="row-title">Break reminders</span><span class="row-sub">Movement prompts after long sitting</span></div>
+          <div class="row-side"><button class="toggle on" type="button" role="switch" aria-checked="true" aria-label="Break reminders"></button></div>
+        </div>
+        <div class="row-pill">
+          <div class="row-main"><span class="row-title">Environment notices</span><span class="row-sub">Light, temperature, humidity</span></div>
+          <div class="row-side"><button class="toggle on" type="button" role="switch" aria-checked="true" aria-label="Environment notices"></button></div>
+        </div>
+        <div class="row-pill">
+          <div class="row-main"><span class="row-title">Device notices</span><span class="row-sub">Sensor and connection issues</span></div>
+          <div class="row-side"><button class="toggle on" type="button" role="switch" aria-checked="true" aria-label="Device notices"></button></div>
+        </div>
+        <div class="row-pill">
+          <div class="row-main"><span class="row-title">Daily digest</span><span class="row-sub">One summary at 17:00</span></div>
+          <div class="row-side"><button class="toggle" type="button" role="switch" aria-checked="false" aria-label="Daily digest"></button></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Adaptive controls -->
+    <section class="glass span-6">
+      <div class="card-head">
+        <div><h2 class="card-title">Adaptive controls (demo)</h2><p class="card-sub">Suggested only — never automatic</p></div>
+      </div>
+      <div class="settings-group">
+        <div class="row-pill">
+          <div class="row-main"><span class="row-title">Smart lamp</span><span class="row-sub">Warm bedside lamp · simulated</span></div>
+          <div class="row-side"><button class="toggle on" type="button" role="switch" aria-checked="true" aria-label="Smart lamp"></button></div>
+        </div>
+        <div class="row-pill">
+          <div class="row-main"><span class="row-title">Desk fan</span><span class="row-sub">Desk fan · simulated</span></div>
+          <div class="row-side"><button class="toggle" type="button" role="switch" aria-checked="false" aria-label="Desk fan"></button></div>
+        </div>
+      </div>
+      <p class="chart-note" style="margin-top:12px">DeskSense suggests these controls in recommendations but never switches them for you.</p>
+    </section>
+
+  </main>
+
+  <script src="data/mock.js"></script>
+  <script src="js/layout.js"></script>
+  <script>
+    (function () {
+      "use strict";
+      var data = window.DeskSenseData;
+      var p = data.preferences;
+
+      function $(id) { return document.getElementById(id); }
+      function pair(minEl, maxEl, gap, outEl, unit) {
+        var min = Number(minEl.value);
+        var max = Number(maxEl.value);
+        if (max - min < gap) {
+          if (document.activeElement === minEl) maxEl.value = String(Math.min(Number(maxEl.max), min + gap));
+          else minEl.value = String(Math.max(Number(minEl.min), max - gap));
+        }
+        outEl.textContent = minEl.value + "–" + maxEl.value + unit;
+        updateSummary();
+      }
+      function updateSummary() {
+        $("pref-summary").textContent = "Flag distance outside " + $("pref-dist-min").value + "–" + $("pref-dist-max").value +
+          " cm, temperature outside " + $("pref-temp-min").value + "–" + $("pref-temp-max").value +
+          " °C, humidity outside " + $("pref-hum-min").value + "–" + $("pref-hum-max").value +
+          " %, or sitting longer than " + $("pref-break").value + " min.";
+      }
+
+      /* prefill from data */
+      $("pref-dist-min").value = p.preferredDistance.min;
+      $("pref-dist-max").value = p.preferredDistance.max;
+      $("pref-temp-min").value = p.temperature.min;
+      $("pref-temp-max").value = p.temperature.max;
+      $("pref-hum-min").value = p.humidity.min;
+      $("pref-hum-max").value = p.humidity.max;
+      $("pref-break").value = p.breakIntervalMin;
+
+      var lightBtns = Array.prototype.slice.call(document.querySelectorAll("[data-light]"));
+      lightBtns.forEach(function (btn) {
+        var on = btn.getAttribute("data-light") === p.lighting;
+        btn.classList.toggle("active", on);
+        btn.setAttribute("aria-pressed", String(on));
+        btn.addEventListener("click", function () {
+          lightBtns.forEach(function (o) {
+            var isOn = o === btn;
+            o.classList.toggle("active", isOn);
+            o.setAttribute("aria-pressed", String(isOn));
+          });
+        });
+      });
+
+      $("pref-dist-min").addEventListener("input", function () { pair($("pref-dist-min"), $("pref-dist-max"), 5, $("dist-out"), " cm"); });
+      $("pref-dist-max").addEventListener("input", function () { pair($("pref-dist-min"), $("pref-dist-max"), 5, $("dist-out"), " cm"); });
+      $("pref-temp-min").addEventListener("input", function () { pair($("pref-temp-min"), $("pref-temp-max"), 1, $("temp-out"), " °C"); });
+      $("pref-temp-max").addEventListener("input", function () { pair($("pref-temp-min"), $("pref-temp-max"), 1, $("temp-out"), " °C"); });
+      $("pref-hum-min").addEventListener("input", function () { pair($("pref-hum-min"), $("pref-hum-max"), 5, $("hum-out"), " %"); });
+      $("pref-hum-max").addEventListener("input", function () { pair($("pref-hum-min"), $("pref-hum-max"), 5, $("hum-out"), " %"); });
+      $("pref-break").addEventListener("input", function () {
+        $("break-out").textContent = $("pref-break").value + " min";
+        updateSummary();
+      });
+
+      pair($("pref-dist-min"), $("pref-dist-max"), 5, $("dist-out"), " cm");
+      pair($("pref-temp-min"), $("pref-temp-max"), 1, $("temp-out"), " °C");
+      pair($("pref-hum-min"), $("pref-hum-max"), 5, $("hum-out"), " %");
+      $("break-out").textContent = $("pref-break").value + " min";
+
+      document.querySelectorAll(".toggle").forEach(function (t) {
+        t.addEventListener("click", function () {
+          var on = t.classList.toggle("on");
+          t.setAttribute("aria-checked", String(on));
+        });
+      });
+
+      $("pref-save").addEventListener("click", function () {
+        if (window.DeskSenseLayout) window.DeskSenseLayout.toast("<strong>Preferences saved.</strong> Suggestions now use your new ranges.");
+      });
+
+      $("pref-date").textContent = "Preferences · " + data.sessions[data.sessions.length - 1].date;
+    })();
+  </script>
+</body>
+</html>

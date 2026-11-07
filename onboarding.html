@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Workspace setup — DeskSense AI</title>
+  <meta name="description" content="DeskSense AI demo onboarding: sensor check, 10-second distance calibration, desk setup checklist, comfort ranges and privacy choices.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body data-page="onboarding" data-chrome="minimal">
+
+  <main id="main" class="setup page">
+    <section class="glass setup-card" aria-label="Workspace setup">
+
+      <!-- Progress pill -->
+      <div class="setup-top">
+        <div>
+          <p class="eyebrow">Workspace setup</p>
+          <p class="setup-meta" id="setup-meta">Step 1 of 7 · Welcome</p>
+        </div>
+        <button class="setup-skip" id="setup-skip" type="button">Skip for now</button>
+      </div>
+      <div class="setup-progress">
+        <div class="stepper" id="setup-progress" role="progressbar"
+             aria-label="Setup progress" aria-valuemin="1" aria-valuemax="7"
+             aria-valuenow="1" aria-valuetext="Step 1 of 7: Welcome">
+          <div class="stepper-track" aria-hidden="true">
+            <span class="stepper-seg current"></span>
+            <span class="stepper-seg"></span>
+            <span class="stepper-seg"></span>
+            <span class="stepper-seg"></span>
+            <span class="stepper-seg"></span>
+            <span class="stepper-seg"></span>
+            <span class="stepper-seg"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 1. Welcome -->
+      <section class="setup-step" id="setup-step-1" aria-labelledby="setup-title-1">
+        <h1 class="setup-title" id="setup-title-1" tabindex="-1">A quieter, more comfortable desk.</h1>
+        <p class="setup-lede">
+          DeskSense watches five room readings and suggests small changes. It never
+          diagnoses anything, and it never changes your room on its own.
+        </p>
+        <div class="setup-split">
+          <div class="setup-panel">
+            <h2>What DeskSense does</h2>
+            <ul class="mark-list yes">
+              <li><span class="mark" aria-hidden="true">✓</span>Notices when you drift closer than your preferred range</li>
+              <li><span class="mark" aria-hidden="true">✓</span>Flags light, temperature and humidity outside your ranges</li>
+              <li><span class="mark" aria-hidden="true">✓</span>Reminds you to move after a long sitting block</li>
+              <li><span class="mark" aria-hidden="true">✓</span>Learns patterns from your own readings, not from anyone else</li>
+            </ul>
+          </div>
+          <div class="setup-panel">
+            <h2>What it does not do</h2>
+            <ul class="mark-list no">
+              <li><span class="mark" aria-hidden="true">✕</span>Use a camera, microphone or wearable</li>
+              <li><span class="mark" aria-hidden="true">✕</span>Guess how you feel from your face</li>
+              <li><span class="mark" aria-hidden="true">✕</span>Diagnose pain, vision or any medical condition</li>
+              <li><span class="mark" aria-hidden="true">✕</span>Switch your lamp or fan without permission</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. Sensor check -->
+      <section class="setup-step" id="setup-step-2" aria-labelledby="setup-title-2" hidden>
+        <h1 class="setup-title" id="setup-title-2" tabindex="-1">Check the sensors.</h1>
+        <p class="setup-lede">
+          One desk unit, five sensors. All of them should respond before you record
+          a baseline.
+        </p>
+        <ul class="sensor-check" id="sensor-check"></ul>
+        <p class="setup-note good" id="sensor-summary" role="status">
+          All five sensors responded. You can re-run the check at any time.
+        </p>
+        <div class="cluster" style="margin-top:16px">
+          <button class="btn ghost small" id="sensor-recheck" type="button">Re-run sensor check</button>
+        </div>
+      </section>
+
+      <!-- 3. Calibration -->
+      <section class="setup-step" id="setup-step-3" aria-labelledby="setup-title-3" hidden>
+        <h1 class="setup-title" id="setup-title-3" tabindex="-1">Record your baseline.</h1>
+        <p class="setup-lede">
+          Sit upright in your normal working position for 10 seconds. DeskSense
+          records the distance once and compares later readings against it.
+        </p>
+
+        <div class="calibrate">
+          <div class="timer-ring" id="cal-ring" style="--p:100;--size:196px" aria-hidden="true">
+            <div class="ring-inner">
+              <span class="ring-value" id="cal-count">10</span>
+              <span class="ring-label" id="cal-unit">seconds</span>
+            </div>
+          </div>
+
+          <div class="cal-actions">
+            <button class="btn" id="cal-start" type="button">Start 10-second calibration</button>
+          </div>
+
+          <div class="cal-result" id="cal-result" tabindex="-1" hidden>
+            <strong id="cal-value">64.8 cm</strong>
+            <span>Baseline recorded. Later readings are compared against this distance.</span>
+          </div>
+
+          <p class="setup-note" id="cal-status" role="status" aria-live="polite">
+            Sit upright in your normal working position, then start the countdown.
+          </p>
+
+          <div class="cal-actions">
+            <button class="btn ghost small" id="cal-recal" type="button" hidden>Recalibrate</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. Setup checklist -->
+      <section class="setup-step" id="setup-step-4" aria-labelledby="setup-title-4" hidden>
+        <h1 class="setup-title" id="setup-title-4" tabindex="-1">Set up your chair and screen.</h1>
+        <p class="setup-lede">
+          Tick what is already true. Nothing here is enforced — it is a setup
+          checklist for you, not a test.
+        </p>
+
+        <div class="setup-checklist">
+          <label class="setup-check">
+            <input type="checkbox" id="check-monitor">
+            <span>Monitor top at or slightly below eye level</span>
+          </label>
+          <label class="setup-check">
+            <input type="checkbox" id="check-neck">
+            <span>Neck roughly neutral, chin not jutting forward</span>
+          </label>
+          <label class="setup-check">
+            <input type="checkbox" id="check-back">
+            <span>Lower back supported by the chair</span>
+          </label>
+          <label class="setup-check">
+            <input type="checkbox" id="check-wrists">
+            <span>Wrists straight and forearms roughly level</span>
+          </label>
+          <label class="setup-check">
+            <input type="checkbox" id="check-reach">
+            <span>Keyboard and mouse within easy reach</span>
+          </label>
+          <label class="setup-check">
+            <input type="checkbox" id="check-glare">
+            <span>No glare or bright reflection on the screen</span>
+          </label>
+        </div>
+
+        <p class="setup-note" id="check-count" aria-live="polite">0 of 6 confirmed</p>
+      </section>
+
+      <!-- 5. Comfort preferences -->
+      <section class="setup-step" id="setup-step-5" aria-labelledby="setup-title-5" hidden>
+        <h1 class="setup-title" id="setup-title-5" tabindex="-1">Your comfort ranges.</h1>
+        <p class="setup-lede">
+          Suggestions only fire when a reading leaves these ranges. You can change
+          all of them later in Preferences.
+        </p>
+
+        <div class="setup-fields">
+          <div class="setup-field">
+            <div class="setup-field-head">
+              <span class="field-title">Preferred screen distance</span>
+              <span class="field-value" id="dist-out">50–70 cm</span>
+            </div>
+            <div class="field-row">
+              <span>Closest</span>
+              <input type="range" id="pref-dist-min" min="40" max="65" step="5" value="50"
+                     aria-label="Closest comfortable screen distance, centimetres">
+            </div>
+            <div class="field-row">
+              <span>Furthest</span>
+              <input type="range" id="pref-dist-max" min="55" max="90" step="5" value="70"
+                     aria-label="Furthest comfortable screen distance, centimetres">
+            </div>
+          </div>
+
+          <div class="setup-field">
+            <div class="setup-field-head">
+              <span class="field-title">Preferred temperature</span>
+              <span class="field-value" id="temp-out">23–27 °C</span>
+            </div>
+            <div class="field-row">
+              <span>Coolest</span>
+              <input type="range" id="pref-temp-min" min="20" max="26" step="1" value="23"
+                     aria-label="Coolest comfortable temperature, degrees Celsius">
+            </div>
+            <div class="field-row">
+              <span>Warmest</span>
+              <input type="range" id="pref-temp-max" min="25" max="30" step="1" value="27"
+                     aria-label="Warmest comfortable temperature, degrees Celsius">
+            </div>
+          </div>
+
+          <div class="setup-field">
+            <div class="setup-field-head">
+              <span class="field-title">Break reminder</span>
+              <span class="field-value" id="break-out">50 min</span>
+            </div>
+            <div class="field-row">
+              <span>After</span>
+              <input type="range" id="pref-break" min="30" max="90" step="5" value="50"
+                     aria-label="Minutes of sitting before a break reminder">
+            </div>
+          </div>
+
+          <div class="setup-field">
+            <div class="setup-field-head">
+              <span class="field-title">Lighting preference</span>
+            </div>
+            <div class="segmented" role="group" aria-label="Lighting preference">
+              <button type="button" class="active" data-light="Warm" aria-pressed="true">Warm</button>
+              <button type="button" data-light="Neutral" aria-pressed="false">Neutral</button>
+              <button type="button" data-light="Cool" aria-pressed="false">Cool</button>
+            </div>
+          </div>
+        </div>
+
+        <p class="setup-note" id="pref-summary"></p>
+      </section>
+
+      <!-- 6. Privacy -->
+      <section class="setup-step" id="setup-step-6" aria-labelledby="setup-title-6" hidden>
+        <h1 class="setup-title" id="setup-title-6" tabindex="-1">Privacy and schedule.</h1>
+        <p class="setup-lede">
+          DeskSense stores numeric sensor readings only. No images, no audio, no
+          emotion labels. Feelings only ever come from your own check-ins.
+        </p>
+
+        <div class="setup-fields">
+          <div class="setup-field">
+            <div class="setup-field-head">
+              <span class="field-title">Keep readings for</span>
+            </div>
+            <div class="segmented" role="group" aria-label="Data retention">
+              <button type="button" data-days="7" aria-pressed="false">7 days</button>
+              <button type="button" data-days="30" class="active" aria-pressed="true">30 days</button>
+              <button type="button" data-days="90" aria-pressed="false">90 days</button>
+            </div>
+            <p class="setup-note" style="margin-top:10px">
+              Older minute-by-minute readings are removed automatically.
+            </p>
+          </div>
+
+          <div class="setup-field">
+            <div class="setup-field-head">
+              <span class="field-title">Monitoring schedule</span>
+            </div>
+            <div class="time-row">
+              <label for="sched-start">From</label>
+              <input type="time" id="sched-start" value="09:00">
+              <label for="sched-end">to</label>
+              <input type="time" id="sched-end" value="17:00">
+            </div>
+            <div class="setup-toggle-row">
+              <div>
+                Pause monitoring outside these hours
+                <span class="row-sub">The desk unit keeps its clock but stores no readings.</span>
+              </div>
+              <button class="toggle on" id="pause-outside" type="button" role="switch"
+                      aria-checked="true" aria-label="Pause monitoring outside the schedule"></button>
+            </div>
+          </div>
+
+          <div class="setup-field">
+            <div class="setup-field-head">
+              <span class="field-title">What is stored</span>
+            </div>
+            <ul class="mark-list no" style="gap:7px">
+              <li><span class="mark" aria-hidden="true">✕</span>Camera images or video</li>
+              <li><span class="mark" aria-hidden="true">✕</span>Microphone audio or voice</li>
+              <li><span class="mark" aria-hidden="true">✕</span>Facial emotion labels</li>
+            </ul>
+            <p class="setup-note">Stored instead: distance, light, temperature, humidity and presence, minute by minute.</p>
+          </div>
+        </div>
+
+        <p class="setup-error" id="schedule-error" role="alert" hidden></p>
+      </section>
+
+      <!-- 7. Finish -->
+      <section class="setup-step" id="setup-step-7" aria-labelledby="setup-title-7" hidden>
+        <h1 class="setup-title" id="setup-title-7" tabindex="-1">You're set up.</h1>
+        <p class="setup-lede">
+          Here is what DeskSense will use. Every one of these can be changed later
+          in Preferences and Privacy.
+        </p>
+        <ul class="setup-summary" id="setup-summary"></ul>
+        <p class="setup-note">
+          Your first suggestion appears on the dashboard once monitoring begins.
+          Recommendations are comfort suggestions, not medical advice.
+        </p>
+      </section>
+
+      <!-- Footer nav -->
+      <div class="setup-actions">
+        <button class="btn ghost" id="setup-back" type="button" disabled>Back</button>
+        <p class="hint" id="setup-hint">This demo runs on simulated readings only.</p>
+        <button class="btn" id="setup-next" type="button">Continue</button>
+      </div>
+
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1"></script>
+  <script src="data/mock.js"></script>
+  <script src="js/charts.js"></script>
+  <script src="js/layout.js"></script>
+  <script>
+    (function () {
+      "use strict";
+
+      var data = window.DeskSenseData;
+      var STEP_LABELS = ["Welcome", "Sensor check", "Calibration", "Setup checklist", "Comfort", "Privacy", "Finish"];
+      var HINTS = [
+        "This demo runs on simulated readings only.",
+        "One desk unit, five sensors.",
+        "Continue unlocks after the baseline is recorded.",
+        "A checklist for you — nothing is enforced.",
+        "Recommendations only use these ranges.",
+        "Numeric readings only. No images, audio or feelings are stored.",
+        "You can change everything later in Preferences."
+      ];
+
+      /* A reset link restarts setup from a clean state. */
+      var params = new URLSearchParams(window.location.search);
+      if (params.get("reset") === "1") {
+        try {
+          localStorage.removeItem("desksense.onboarded");
+          localStorage.removeItem("desksense.setup");
+        } catch (e) { /* storage blocked */ }
+        window.history.replaceState(null, "", "onboarding.html");
+        if (window.DeskSenseLayout) {
+          window.DeskSenseLayout.toast("<strong>Setup restarted.</strong> Previous demo choices were cleared.");
+        }
+      }
+
+      var saved = null;
+      try { saved = JSON.parse(localStorage.getItem("desksense.setup") || "null"); } catch (e) { saved = null; }
+
+      var baseline = saved && saved.baselineDistance ? Number(saved.baselineDistance) : data.readings[0].distance;
+      var calibrated = !!(saved && saved.baselineDistance);
+      var lighting = (saved && saved.lighting) || "Warm";
+      var retention = (saved && saved.retentionDays) || 30;
+
+      var stepEls = [1, 2, 3, 4, 5, 6, 7].map(function (n) {
+        return document.getElementById("setup-step-" + n);
+      });
+      var titles = [1, 2, 3, 4, 5, 6, 7].map(function (n) {
+        return document.getElementById("setup-title-" + n);
+      });
+      var segs = Array.prototype.slice.call(document.querySelectorAll(".stepper-seg"));
+      var meta = document.getElementById("setup-meta");
+      var progress = document.getElementById("setup-progress");
+      var backBtn = document.getElementById("setup-back");
+      var nextBtn = document.getElementById("setup-next");
+      var hint = document.getElementById("setup-hint");
+      var skipBtn = document.getElementById("setup-skip");
+      var current = 0;
+
+      function esc(value) {
+        return String(value).replace(/[&<>"']/g, function (ch) {
+          return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch];
+        });
+      }
+
+      /* ------------------------------------------------------------ steps */
+      function showStep(index, focus) {
+        current = Math.max(0, Math.min(6, index));
+        stepEls.forEach(function (el, i) { el.hidden = i !== current; });
+
+        segs.forEach(function (seg, i) {
+          seg.classList.toggle("done", i < current);
+          seg.classList.toggle("current", i === current);
+        });
+
+        meta.textContent = "Step " + (current + 1) + " of 7 · " + STEP_LABELS[current];
+        progress.setAttribute("aria-valuenow", String(current + 1));
+        progress.setAttribute("aria-valuetext",
+          "Step " + (current + 1) + " of 7: " + STEP_LABELS[current]);
+
+        backBtn.disabled = current === 0;
+        nextBtn.disabled = current === 2 && !calibrated;
+        nextBtn.textContent = current === 6 ? "Finish setup" : "Continue";
+        skipBtn.hidden = current === 6;
+
+        hint.textContent = HINTS[current];
+        if (current === 2 && calibrated) {
+          hint.textContent = "Baseline recorded at " + Number(baseline).toFixed(1) + " cm.";
+        }
+        if (current === 3) updateCheckCount();
+        if (current === 4) updatePrefs();
+        if (current === 6) renderSummary();
+
+        if (focus) titles[current].focus();
+      }
+
+      /* ----------------------------------------------------------- sensors */
+      var unit = data.devices[0];
+      var sensorList = document.getElementById("sensor-check");
+      var sensorSummary = document.getElementById("sensor-summary");
+      var recheckBtn = document.getElementById("sensor-recheck");
+      var checking = false;
+
+      function renderSensors(mode) {
+        sensorList.innerHTML = unit.sensors.map(function (sensor) {
+          var now = mode === "checking";
+          return "<li>" +
+            '<span class="dot ' + (now ? "warn" : "") + '" aria-hidden="true"></span>' +
+            '<span class="sensor-label">' + esc(sensor.label) + "</span>" +
+            '<span class="sensor-val">' + (now ? "—" : esc(sensor.value)) + "</span>" +
+            '<span class="status ' + (now ? "warn" : "good") + '">' + (now ? "Checking…" : "Ready") + "</span>" +
+          "</li>";
+        }).join("");
+      }
+
+      renderSensors("ready");
+
+      recheckBtn.addEventListener("click", function () {
+        if (checking) return;
+        checking = true;
+        recheckBtn.disabled = true;
+        sensorSummary.textContent = "Checking five sensors…";
+        sensorSummary.className = "setup-note";
+        renderSensors("checking");
+        window.setTimeout(function () {
+          checking = false;
+          recheckBtn.disabled = false;
+          renderSensors("ready");
+          sensorSummary.textContent = "All five sensors responded.";
+          sensorSummary.className = "setup-note good";
+        }, 1100);
+      });
+
+      /* -------------------------------------------------------- calibration */
+      var ring = document.getElementById("cal-ring");
+      var calCount = document.getElementById("cal-count");
+      var calUnit = document.getElementById("cal-unit");
+      var calStart = document.getElementById("cal-start");
+      var calRecal = document.getElementById("cal-recal");
+      var calResult = document.getElementById("cal-result");
+      var calValue = document.getElementById("cal-value");
+      var calStatus = document.getElementById("cal-status");
+      var calTimer = null;
+      var remaining = 10;
+
+      function showBaseline(message, shouldFocus) {
+        calResult.hidden = false;
+        calValue.textContent = Number(baseline).toFixed(1) + " cm";
+        calStart.hidden = true;
+        calRecal.hidden = false;
+        calCount.textContent = "✓";
+        calUnit.textContent = "recorded";
+        ring.style.setProperty("--ring", "var(--good)");
+        ring.style.setProperty("--p", "100");
+        calStatus.textContent = message;
+        calStatus.className = "setup-note good";
+        if (current === 2) {
+          nextBtn.disabled = false;
+          hint.textContent = "Baseline recorded at " + Number(baseline).toFixed(1) + " cm.";
+        }
+        if (shouldFocus) calResult.focus();
+      }
+
+      function resetCalibration() {
+        if (calTimer) { window.clearInterval(calTimer); calTimer = null; }
+        calibrated = false;
+        remaining = 10;
+        calCount.textContent = "10";
+        calUnit.textContent = "seconds";
+        ring.style.setProperty("--ring", "var(--accent)");
+        ring.style.setProperty("--p", "100");
+        calStart.hidden = false;
+        calStart.disabled = false;
+        calRecal.hidden = true;
+        calResult.hidden = true;
+        calStatus.textContent = "Sit upright in your normal working position, then start the countdown.";
+        calStatus.className = "setup-note";
+        if (current === 2) {
+          nextBtn.disabled = true;
+          hint.textContent = HINTS[2];
+        }
+      }
+
+      function tickCalibration() {
+        remaining -= 1;
+        calCount.textContent = String(remaining);
+        ring.style.setProperty("--p", String(Math.max(0, remaining * 10)));
+        if (remaining <= 0) {
+          window.clearInterval(calTimer);
+          calTimer = null;
+          calibrated = true;
+          showBaseline("Baseline recorded at " + Number(baseline).toFixed(1) + " cm. We compare later readings against it.", true);
+        }
+      }
+
+      calStart.addEventListener("click", function () {
+        if (calTimer) return;
+        calStart.disabled = true;
+        calResult.hidden = true;
+        calRecal.hidden = true;
+        calStatus.textContent = "Calibrating — hold still.";
+        calStatus.className = "setup-note";
+        remaining = 11;
+        tickCalibration();
+        calTimer = window.setInterval(tickCalibration, 1000);
+      });
+
+      calRecal.addEventListener("click", function () {
+        resetCalibration();
+        calStart.focus();
+      });
+
+      if (calibrated) {
+        showBaseline("Saved baseline from your last setup at " + Number(baseline).toFixed(1) + " cm. Recalibrate if you moved your desk.", false);
+        hint.textContent = "Baseline recorded at " + Number(baseline).toFixed(1) + " cm.";
+      }
+
+      /* ---------------------------------------------------------- checklist */
+      var checkInputs = Array.prototype.slice.call(document.querySelectorAll(".setup-check input"));
+      var checkCount = document.getElementById("check-count");
+
+      function updateCheckCount() {
+        var done = checkInputs.filter(function (input) { return input.checked; }).length;
+        checkCount.textContent = done + " of " + checkInputs.length + " confirmed";
+        checkCount.className = "setup-note" + (done === checkInputs.length ? " good" : "");
+      }
+
+      checkInputs.forEach(function (input) {
+        input.addEventListener("change", updateCheckCount);
+      });
+
+      /* -------------------------------------------------------- preferences */
+      var distMin = document.getElementById("pref-dist-min");
+      var distMax = document.getElementById("pref-dist-max");
+      var distOut = document.getElementById("dist-out");
+      var tempMin = document.getElementById("pref-temp-min");
+      var tempMax = document.getElementById("pref-temp-max");
+      var tempOut = document.getElementById("temp-out");
+      var breakInput = document.getElementById("pref-break");
+      var breakOut = document.getElementById("break-out");
+      var prefSummary = document.getElementById("pref-summary");
+
+      function pair(minEl, maxEl, gap, outEl, unit) {
+        var min = Number(minEl.value);
+        var max = Number(maxEl.value);
+        if (max - min < gap) {
+          if (document.activeElement === minEl) {
+            maxEl.value = String(Math.min(Number(maxEl.max), min + gap));
+          } else {
+            minEl.value = String(Math.max(Number(minEl.min), max - gap));
+          }
+        }
+        outEl.textContent = minEl.value + "–" + maxEl.value + unit;
+        updatePrefs();
+      }
+
+      function updatePrefs() {
+        prefSummary.textContent = "Flag distance outside " + distMin.value + "–" + distMax.value +
+          " cm, temperature outside " + tempMin.value + "–" + tempMax.value +
+          " °C, or sitting longer than " + breakInput.value + " min. Light preference: " + lighting + ".";
+      }
+
+      distMin.addEventListener("input", function () { pair(distMin, distMax, 5, distOut, " cm"); });
+      distMax.addEventListener("input", function () { pair(distMin, distMax, 5, distOut, " cm"); });
+      tempMin.addEventListener("input", function () { pair(tempMin, tempMax, 1, tempOut, " °C"); });
+      tempMax.addEventListener("input", function () { pair(tempMin, tempMax, 1, tempOut, " °C"); });
+      breakInput.addEventListener("input", function () {
+        breakOut.textContent = breakInput.value + " min";
+        updatePrefs();
+      });
+
+      /* lighting chips */
+      var lightBtns = Array.prototype.slice.call(document.querySelectorAll("[data-light]"));
+      lightBtns.forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          lighting = btn.getAttribute("data-light");
+          lightBtns.forEach(function (other) {
+            var on = other === btn;
+            other.classList.toggle("active", on);
+            other.setAttribute("aria-pressed", String(on));
+          });
+          updatePrefs();
+        });
+      });
+
+      /* -------------------------------------------------------------- privacy */
+      var dayBtns = Array.prototype.slice.call(document.querySelectorAll("[data-days]"));
+      var schedStart = document.getElementById("sched-start");
+      var schedEnd = document.getElementById("sched-end");
+      var scheduleError = document.getElementById("schedule-error");
+      var pauseOutside = document.getElementById("pause-outside");
+
+      dayBtns.forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          retention = Number(btn.getAttribute("data-days"));
+          dayBtns.forEach(function (other) {
+            var on = other === btn;
+            other.classList.toggle("active", on);
+            other.setAttribute("aria-pressed", String(on));
+          });
+        });
+      });
+
+      pauseOutside.addEventListener("click", function () {
+        var on = pauseOutside.classList.toggle("on");
+        pauseOutside.setAttribute("aria-checked", String(on));
+      });
+
+      function scheduleValid() {
+        if (!schedStart.value || !schedEnd.value || schedEnd.value <= schedStart.value) {
+          scheduleError.textContent = "Choose an end time later than the start time.";
+          scheduleError.hidden = false;
+          return false;
+        }
+        scheduleError.hidden = true;
+        return true;
+      }
+
+      [schedStart, schedEnd].forEach(function (input) {
+        input.addEventListener("change", function () {
+          if (!scheduleError.hidden) scheduleValid();
+        });
+      });
+
+      /* ------------------------------------------------------------- summary */
+      function currentSetup() {
+        return {
+          baselineDistance: Math.round(Number(baseline) * 10) / 10,
+          preferredDistance: { min: Number(distMin.value), max: Number(distMax.value) },
+          temperature: { min: Number(tempMin.value), max: Number(tempMax.value) },
+          breakIntervalMin: Number(breakInput.value),
+          lighting: lighting,
+          retentionDays: retention,
+          schedule: { start: schedStart.value, end: schedEnd.value },
+          pauseOutsideSchedule: pauseOutside.classList.contains("on")
+        };
+      }
+
+      function renderSummary() {
+        var setup = currentSetup();
+        var rows = [
+          ["Preferred distance", setup.preferredDistance.min + "–" + setup.preferredDistance.max + " cm"],
+          ["Temperature range", setup.temperature.min + "–" + setup.temperature.max + " °C"],
+          ["Break reminder", setup.breakIntervalMin + " min"],
+          ["Lighting", setup.lighting],
+          ["Baseline distance", setup.baselineDistance.toFixed(1) + " cm"],
+          ["Data retention", setup.retentionDays + " days"],
+          ["Monitoring", setup.schedule.start + "–" + setup.schedule.end +
+            (setup.pauseOutsideSchedule ? " · paused outside" : "")]
+        ];
+        document.getElementById("setup-summary").innerHTML = rows.map(function (row) {
+          return "<li><span>" + esc(row[0]) + "</span><strong>" + esc(row[1]) + "</strong></li>";
+        }).join("");
+      }
+
+      /* ---------------------------------------------------------------- nav */
+      skipBtn.addEventListener("click", function () {
+        try { localStorage.setItem("desksense.onboarded", "1"); } catch (e) { /* storage blocked */ }
+        window.location.href = "index.html";
+      });
+
+      backBtn.addEventListener("click", function () {
+        if (current === 0) return;
+        showStep(current - 1, true);
+      });
+
+      nextBtn.addEventListener("click", function () {
+        if (current === 5 && !scheduleValid()) {
+          schedEnd.focus();
+          return;
+        }
+        if (current === 6) {
+          var setup = currentSetup();
+          try {
+            localStorage.setItem("desksense.setup", JSON.stringify(setup));
+            localStorage.setItem("desksense.onboarded", "1");
+          } catch (e) { /* storage blocked */ }
+          window.location.href = "index.html";
+          return;
+        }
+        showStep(current + 1, true);
+      });
+
+      /* ----------------------------------------------------------- prefill */
+      if (saved) {
+        if (saved.preferredDistance) {
+          distMin.value = String(saved.preferredDistance.min);
+          distMax.value = String(saved.preferredDistance.max);
+        }
+        if (saved.temperature) {
+          tempMin.value = String(saved.temperature.min);
+          tempMax.value = String(saved.temperature.max);
+        }
+        if (saved.breakIntervalMin) breakInput.value = String(saved.breakIntervalMin);
+        if (saved.retentionDays) {
+          retention = Number(saved.retentionDays);
+          dayBtns.forEach(function (btn) {
+            var on = Number(btn.getAttribute("data-days")) === retention;
+            btn.classList.toggle("active", on);
+            btn.setAttribute("aria-pressed", String(on));
+          });
+        }
+        if (saved.schedule) {
+          if (saved.schedule.start) schedStart.value = saved.schedule.start;
+          if (saved.schedule.end) schedEnd.value = saved.schedule.end;
+        }
+        if (saved.pauseOutsideSchedule === false) {
+          pauseOutside.classList.remove("on");
+          pauseOutside.setAttribute("aria-checked", "false");
+        }
+      }
+
+      /* apply lighting chips (default or saved) */
+      lightBtns.forEach(function (btn) {
+        var on = btn.getAttribute("data-light") === lighting;
+        btn.classList.toggle("active", on);
+        btn.setAttribute("aria-pressed", String(on));
+      });
+
+      pair(distMin, distMax, 5, distOut, " cm");
+      pair(tempMin, tempMax, 1, tempOut, " °C");
+      breakOut.textContent = breakInput.value + " min";
+      updateCheckCount();
+
+      showStep(0, false);
+    })();
+  </script>
+</body>
+</html>

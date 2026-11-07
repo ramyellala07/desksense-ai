@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Style guide — DeskSense AI</title>
+  <meta name="description" content="Temporary style guide for the DeskSense AI demo: colour, type, cards, controls and charts.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body data-page="style-guide">
+
+  <main id="main" class="bento page">
+
+    <!-- Intro -->
+    <section class="glass span-12">
+      <p class="eyebrow">Step 1 · design system</p>
+      <h1 class="page-title">DeskSense AI style guide</h1>
+      <p class="sub">
+        Dark purple, glossy and iOS-inspired. Everything below is built from the shared
+        tokens in <code>refs/design.css</code> and the components in <code>css/styles.css</code>.
+        This page is temporary and is not part of the final navigation.
+      </p>
+      <div class="cluster" style="margin-top:18px">
+        <span class="chip active">Glass surfaces</span>
+        <span class="chip">Bento grid</span>
+        <span class="chip">Pill controls</span>
+        <span class="status good">Demo data</span>
+      </div>
+    </section>
+
+    <!-- Palette -->
+    <section class="glass span-6">
+      <div class="card-head">
+        <div>
+          <h2 class="card-title">Palette</h2>
+          <p class="card-sub">Backgrounds, glass and status colours.</p>
+        </div>
+      </div>
+      <div class="swatch-grid">
+        <div class="swatch" style="background:#0E0B1D">
+          <strong>Page</strong><code>#0E0B1D</code>
+        </div>
+        <div class="swatch" style="background:#2A1E4D">
+          <strong>Surface</strong><code>#2A1E4D</code>
+        </div>
+        <div class="swatch" style="background:#5A3B8C">
+          <strong>Primary</strong><code>#5A3B8C</code>
+        </div>
+        <div class="swatch" style="background:#8B7CC7;color:#0E0B1D">
+          <strong style="color:#0E0B1D">Accent</strong><code style="color:#0E0B1D">#8B7CC7</code>
+        </div>
+        <div class="swatch" style="background:#C9C2E3;color:#0E0B1D">
+          <strong style="color:#0E0B1D">Text</strong><code style="color:#0E0B1D">#C9C2E3</code>
+        </div>
+        <div class="swatch" style="background:#3A3A52">
+          <strong>Border</strong><code>#3A3A52</code>
+        </div>
+        <div class="swatch" style="background:#6FD3A5;color:#0E0B1D">
+          <strong style="color:#0E0B1D">Good</strong><code style="color:#0E0B1D">#6FD3A5</code>
+        </div>
+        <div class="swatch" style="background:#F2C46D;color:#0E0B1D">
+          <strong style="color:#0E0B1D">Warn</strong><code style="color:#0E0B1D">#F2C46D</code>
+        </div>
+        <div class="swatch" style="background:#F27C8D;color:#0E0B1D">
+          <strong style="color:#0E0B1D">Bad</strong><code style="color:#0E0B1D">#F27C8D</code>
+        </div>
+      </div>
+    </section>
+
+    <!-- Typography -->
+    <section class="glass span-6">
+      <div class="card-head">
+        <div>
+          <h2 class="card-title">Type scale</h2>
+          <p class="card-sub">SF Pro first, Inter fallback, system sans last.</p>
+        </div>
+      </div>
+      <div class="stack">
+        <div>
+          <p class="sg-label">Big number</p>
+          <p class="big-number" style="margin:0">62<span class="unit" style="font-size:1rem;color:var(--accent)"> / 100</span></p>
+        </div>
+        <div>
+          <p class="sg-label">Heading</p>
+          <h3 style="margin:0">Your workspace, at a glance</h3>
+        </div>
+        <div>
+          <p class="sg-label">Body</p>
+          <p style="margin:0;line-height:1.6">
+            Your screen appears closer than your preferred range. Consider moving it back
+            to keep 50–70 cm of distance.
+          </p>
+        </div>
+        <div>
+          <p class="sg-label">Muted caption</p>
+          <p class="muted" style="margin:0">LDR 336 / 1023 · last updated 16:59</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Buttons -->
+    <section class="glass span-6">
+      <div class="card-head">
+        <div>
+          <h2 class="card-title">Buttons &amp; chips</h2>
+          <p class="card-sub">Pill-first, with a soft inner highlight.</p>
+        </div>
+      </div>
+      <div class="sg-row">
+        <button class="btn" type="button">Accept</button>
+        <button class="btn ghost" type="button">Reject</button>
+        <button class="btn small" type="button">Customise</button>
+        <button class="btn ghost small" type="button">Not now</button>
+        <button class="btn good small" type="button">Resume</button>
+        <button class="btn danger small" type="button">Delete data</button>
+        <button class="btn" type="button" disabled>Disabled</button>
+      </div>
+      <hr style="border:0;border-top:1px solid rgba(201,194,227,.12);margin:22px 0">
+
+      <p class="sg-label">Filter chips</p>
+      <div class="cluster" data-chip-group>
+        <button class="chip active" type="button" aria-pressed="true">Day</button>
+        <button class="chip" type="button" aria-pressed="false">Week</button>
+        <button class="chip" type="button" aria-pressed="false">Month</button>
+      </div>
+
+      <p class="sg-label" style="margin-top:20px">Status chips</p>
+      <div class="cluster">
+        <span class="status good">Good posture</span>
+        <span class="status warn">Needs a break</span>
+        <span class="status bad">Sensor issue</span>
+      </div>
+
+      <p class="sg-label" style="margin-top:20px">Segmented control</p>
+      <div class="segmented" data-chip-group>
+        <button class="active" type="button">Distance</button>
+        <button type="button">Light</button>
+        <button type="button">Posture</button>
+      </div>
+
+      <p class="sg-label" style="margin-top:20px">Icon buttons</p>
+      <div class="cluster">
+        <button class="icon-btn" type="button" aria-label="Settings">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        </button>
+        <button class="icon-btn" type="button" aria-label="Alerts" style="color:var(--warn)">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M13.7 20a2 2 0 0 1-3.4 0"/></svg>
+        </button>
+        <button class="btn small" type="button" id="sg-toast">Show toast</button>
+      </div>
+    </section>
+
+    <!-- Controls -->
+    <section class="glass span-6">
+      <div class="card-head">
+        <div>
+          <h2 class="card-title">Controls</h2>
+          <p class="card-sub">iOS toggles, sliders, progress and rows.</p>
+        </div>
+      </div>
+
+      <div class="row-pill">
+        <div class="row-main">
+          <span class="row-title">Adaptive lighting</span>
+          <span class="row-sub">Demo control · smart lamp</span>
+        </div>
+        <div class="row-side">
+          <button class="toggle on" type="button" role="switch" aria-checked="true" aria-label="Adaptive lighting"></button>
+        </div>
+      </div>
+      <div class="row-pill">
+        <div class="row-main">
+          <span class="row-title">Daily digest</span>
+          <span class="row-sub">One summary at 17:00</span>
+        </div>
+        <div class="row-side">
+          <button class="toggle" type="button" role="switch" aria-checked="false" aria-label="Daily digest"></button>
+        </div>
+      </div>
+
+      <div style="margin-top:22px">
+        <div class="progress-meta"><span>Preferred distance</span><span id="sg-range-out">50–70 cm</span></div>
+        <input id="sg-range" type="range" min="40" max="90" value="70" step="5" aria-label="Preferred maximum distance">
+      </div>
+
+      <div style="margin-top:22px">
+        <div class="progress-meta"><span>Time in good posture</span><span>95%</span></div>
+        <div class="progress"><span style="width:95%"></span></div>
+        <div class="progress-meta" style="margin-top:14px"><span>Breaks taken</span><span>2 of 3</span></div>
+        <div class="progress"><span style="width:67%"></span></div>
+      </div>
+
+      <div style="margin-top:22px">
+        <details class="acc">
+          <summary>Environment details</summary>
+          <div class="acc-body">
+            <p>Temperature 30.5 °C · humidity 43% · light 336 / 1023.</p>
+            <p class="muted" style="margin:0">Readings update once per minute from the single desk unit.</p>
+          </div>
+        </details>
+        <details class="acc" open>
+          <summary>Why this recommendation?</summary>
+          <div class="acc-body">
+            <p>Your distance stayed below the preferred range while sitting passed 50 minutes.</p>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <!-- Cards -->
+    <section class="glass span-3">
+      <p class="sg-label">Glass card</p>
+      <p style="margin:0;line-height:1.6">Translucent gradient, 24 px blur, inset top highlight and a soft shadow.</p>
+      <div class="cluster" style="margin-top:16px"><span class="status good">Live</span></div>
+    </section>
+
+    <section class="glass accent span-3">
+      <p class="sg-label" style="color:rgba(255,255,255,.75)">Accent card</p>
+      <h3 style="margin:0 0 6px">Refresh mode</h3>
+      <p style="margin:0;color:rgba(255,255,255,.85);font-size:.88rem;line-height:1.55">
+        Brighter room, a short walk, and a screen break.
+      </p>
+      <button class="btn ghost small" type="button" style="margin-top:16px;border-color:rgba(255,255,255,.5);color:#fff">Activate</button>
+    </section>
+
+    <section class="glass dark span-3">
+      <p class="sg-label">Dark card</p>
+      <p style="margin:0;line-height:1.6">Used for the alert list and quiet detail panels where contrast matters.</p>
+    </section>
+
+    <section class="glass span-3" style="display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center">
+      <div class="timer-ring" style="--p:87;--size:132px;--ring:var(--good)">
+        <div class="ring-inner">
+          <span class="ring-value">52</span>
+          <span class="ring-label">min sitting</span>
+        </div>
+      </div>
+      <p class="card-sub" style="margin-top:14px">Progress ring — session timer &amp; streaks.</p>
+    </section>
+
+    <!-- Bar chart -->
+    <section class="glass chart-card span-6">
+      <div class="card-head">
+        <div>
+          <h2 class="card-title">Weekly focus time</h2>
+          <p class="card-sub">Rounded bars; today is highlighted.</p>
+        </div>
+        <span class="status warn">Demo</span>
+      </div>
+      <div class="chart-box"><canvas id="sg-bar" aria-label="Bar chart of focus minutes for the last seven days" role="img"></canvas></div>
+      <p class="chart-note">Hover a bar for the exact minute count. Values come from the last seven mock sessions.</p>
+    </section>
+
+    <!-- Radar chart -->
+    <section class="glass chart-card span-6">
+      <div class="card-head">
+        <div>
+          <h2 class="card-title">Comfort balance</h2>
+          <p class="card-sub">Normalised 0–100, posture score faded behind.</p>
+        </div>
+        <span class="status good">Now</span>
+      </div>
+      <div class="chart-box tall">
+        <span class="chart-watermark" aria-hidden="true">62</span>
+        <canvas id="sg-radar" aria-label="Radar chart of distance, light, temperature, humidity and posture comfort" role="img"></canvas>
+      </div>
+      <p class="chart-note">Posture is the weakest axis at the end of the day. The watermark repeats the headline score.</p>
+    </section>
+
+    <!-- Writing notes -->
+    <section class="glass span-12">
+      <h2 class="card-title">Tone of voice</h2>
+      <p class="card-sub" style="max-width:80ch">
+        Suggestions, never diagnoses. Every recommendation names the readings that triggered it and
+        offers accept, reject and customise. No emotion is inferred from a face — feelings only ever
+        come from the user's own check-in.
+      </p>
+      <div class="cluster" style="margin-top:16px">
+        <span class="chip">Comfort suggestions</span>
+        <span class="chip">Explainable</span>
+        <span class="chip">User-controlled</span>
+        <span class="chip">No camera</span>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1"></script>
+  <script src="data/mock.js"></script>
+  <script src="js/charts.js"></script>
+  <script src="js/layout.js"></script>
+  <script>
+    (function () {
+      "use strict";
+      var data = window.DeskSenseData;
+
+      /* toggles */
+      document.querySelectorAll(".toggle").forEach(function (t) {
+        t.addEventListener("click", function () {
+          var on = t.classList.toggle("on");
+          t.setAttribute("aria-checked", String(on));
+        });
+      });
+
+      /* chip groups (chips and segmented controls) */
+      document.querySelectorAll("[data-chip-group]").forEach(function (group) {
+        var buttons = group.querySelectorAll(".chip, button");
+        buttons.forEach(function (btn) {
+          btn.addEventListener("click", function () {
+            buttons.forEach(function (other) {
+              other.classList.remove("active");
+              if (other.hasAttribute("aria-pressed")) other.setAttribute("aria-pressed", "false");
+            });
+            btn.classList.add("active");
+            if (btn.hasAttribute("aria-pressed")) btn.setAttribute("aria-pressed", "true");
+          });
+        });
+      });
+
+      /* slider */
+      var range = document.getElementById("sg-range");
+      var out = document.getElementById("sg-range-out");
+      if (range && out) {
+        range.addEventListener("input", function () {
+          out.textContent = (range.value - 15) + "–" + range.value + " cm";
+        });
+      }
+
+      /* toast */
+      var toastBtn = document.getElementById("sg-toast");
+      if (toastBtn) {
+        toastBtn.addEventListener("click", function () {
+          if (window.DeskSenseLayout) {
+            window.DeskSenseLayout.toast("<strong>Recommendation accepted.</strong> Light set to warm 40%.");
+          }
+        });
+      }
+
+      /* charts */
+      if (!window.DeskSenseCharts) return;
+
+      var barColors = data.sessions.map(function (s) {
+        return s.isToday ? "#8B7CC7" : "rgba(139,124,199,.34)";
+      });
+
+      var watermark = document.querySelector(".chart-watermark");
+      if (watermark) watermark.textContent = data.derived.postureScore;
+
+      window.DeskSenseCharts.bar("sg-bar", {
+        labels: data.sessions.map(function (s) { return s.dateShort; }),
+        data: data.sessions.map(function (s) { return s.durationMin; }),
+        colors: barColors,
+        unit: "min"
+      });
+
+      window.DeskSenseCharts.radar("sg-radar", {
+        labels: data.derived.radarLabels,
+        data: data.derived.radarValues,
+        max: 100
+      });
+    })();
+  </script>
+</body>
+</html>

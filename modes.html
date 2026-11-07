@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Modes — DeskSense AI</title>
+  <meta name="description" content="DeskSense AI demo comfort modes: Calm, Focus, Refresh and Mindfulness.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body data-page="modes">
+
+  <main id="main" class="bento page">
+
+    <header class="page-hero span-12">
+      <div>
+        <p class="eyebrow" id="mode-date">Modes</p>
+        <h1>Set the tone of your desk.</h1>
+        <p class="sub">
+          A mode is a bundle of comfort suggestions — lighting, breaks and
+          reminders. DeskSense never changes your room on its own; it offers
+          these and you decide.
+        </p>
+      </div>
+      <div class="hero-meta">
+        <span class="status good" id="mode-active">No mode active</span>
+        <span class="chip chip-static">4 available</span>
+      </div>
+    </header>
+
+    <section class="mode-grid span-12" id="mode-grid" aria-label="Comfort modes"></section>
+
+    <section class="glass span-12">
+      <div class="card-head">
+        <div>
+          <h2 class="card-title">How a mode works</h2>
+          <p class="card-sub">Suggestions, not automation</p>
+        </div>
+      </div>
+      <ol class="rec-how-grid">
+        <li>
+          <span class="rec-step-num" aria-hidden="true">1</span>
+          <strong>You pick a mode</strong>
+          <p>Or a recommendation suggests one based on your readings.</p>
+        </li>
+        <li>
+          <span class="rec-step-num" aria-hidden="true">2</span>
+          <strong>DeskSense proposes actions</strong>
+          <p>Lighting, breaks and reminders are listed for your approval.</p>
+        </li>
+        <li>
+          <span class="rec-step-num" aria-hidden="true">3</span>
+          <strong>You apply or dismiss each</strong>
+          <p>Nothing changes in your room without your say-so.</p>
+        </li>
+      </ol>
+    </section>
+
+  </main>
+
+  <script src="data/mock.js"></script>
+  <script src="js/layout.js"></script>
+  <script>
+    (function () {
+      "use strict";
+      var data = window.DeskSenseData;
+      var modes = data.modes;
+      var active = localStorage.getItem("desksense.mode") || "";
+
+      function $(id) { return document.getElementById(id); }
+      function esc(v) { return String(v).replace(/[&<>"']/g, function (ch) { return { "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[ch]; }); }
+
+      function render() {
+        $("mode-grid").innerHTML = modes.map(function (m) {
+          var isActive = m.id === active;
+          return '<article class="mode-tile" style="--glow:' + m.glow + '">' +
+            '<h3>' + esc(m.name) + '</h3>' +
+            '<p>' + esc(m.tagline) + '</p>' +
+            '<div class="mode-lighting">' + esc(m.lighting) + '</div>' +
+            '<p style="font-size:.84rem;line-height:1.55;margin:0 0 12px">' + esc(m.description) + '</p>' +
+            '<ul>' + m.actions.map(function (a) { return '<li>' + esc(a) + '</li>'; }).join("") + '</ul>' +
+            '<button class="btn ' + (isActive ? 'good' : '') + ' small" type="button" data-mode="' + esc(m.id) + '">' +
+              (isActive ? 'Active' : 'Activate') + '</button>' +
+          '</article>';
+        }).join("");
+
+        var activeMode = modes.filter(function (m) { return m.id === active; })[0];
+        $("mode-active").textContent = activeMode ? activeMode.name + " mode" : "No mode active";
+        $("mode-active").className = "status " + (activeMode ? "good" : "neutral");
+      }
+
+      document.addEventListener("click", function (e) {
+        var btn = e.target.closest("[data-mode]");
+        if (!btn) return;
+        var id = btn.getAttribute("data-mode");
+        if (active === id) {
+          active = "";
+          try { localStorage.removeItem("desksense.mode"); } catch (e) {}
+          if (window.DeskSenseLayout) window.DeskSenseLayout.toast("<strong>Mode cleared.</strong> Comfort suggestions return to default.");
+        } else {
+          active = id;
+          try { localStorage.setItem("desksense.mode", id); } catch (e) {}
+          var m = modes.filter(function (x) { return x.id === id; })[0];
+          if (window.DeskSenseLayout) window.DeskSenseLayout.toast("<strong>" + m.name + " mode.</strong> " + m.actions[0] + ".");
+        }
+        render();
+      });
+
+      $("mode-date").textContent = "Modes · " + data.sessions[data.sessions.length - 1].date;
+      render();
+    })();
+  </script>
+</body>
+</html>

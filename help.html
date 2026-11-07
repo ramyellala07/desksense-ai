@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Help & about — DeskSense AI</title>
+  <meta name="description" content="DeskSense AI demo help: frequently asked questions, about and links.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body data-page="help">
+
+  <main id="main" class="bento page">
+
+    <header class="page-hero span-12">
+      <div>
+        <p class="eyebrow" id="help-date">Help & about</p>
+        <h1>How DeskSense works.</h1>
+        <p class="sub">
+          A short guide to the sensors, the suggestions and the privacy behind
+          them. Comfort suggestions only — not medical advice.
+        </p>
+      </div>
+      <div class="hero-meta">
+        <span class="status good">Demo build</span>
+        <span class="chip chip-static">v1.4.2</span>
+      </div>
+    </header>
+
+    <section class="glass span-8">
+      <div class="card-head">
+        <div><h2 class="card-title">Frequently asked questions</h2><p class="card-sub">The things people ask first</p></div>
+      </div>
+      <details class="acc" open>
+        <summary>Does DeskSense use a camera?</summary>
+        <div class="acc-body">
+          <p>No. DeskSense uses an ultrasonic distance sensor, an LDR light sensor, a
+          temperature and humidity sensor and an IR presence sensor. There is no
+          camera, microphone or wearable anywhere in the system.</p>
+        </div>
+      </details>
+      <details class="acc">
+        <summary>Does it know how I feel?</summary>
+        <div class="acc-body">
+          <p>No. Feelings only ever come from your own check-in. DeskSense never
+          guesses emotions from your face or behaviour.</p>
+        </div>
+      </details>
+      <details class="acc">
+        <summary>Will it move my lamp or fan for me?</summary>
+        <div class="acc-body">
+          <p>No. DeskSense suggests changes to lighting and ventilation and you
+          decide whether to apply them. Adaptive controls are off by default.</p>
+        </div>
+      </details>
+      <details class="acc">
+        <summary>Why did a suggestion appear?</summary>
+        <div class="acc-body">
+          <p>Every card names the readings that triggered it and the range you set.
+          A suggestion only appears when a reading sits outside your preferences.</p>
+        </div>
+      </details>
+      <details class="acc">
+        <summary>Is this medical advice?</summary>
+        <div class="acc-body">
+          <p>No. DeskSense offers comfort suggestions for your workspace. It does not
+          diagnose pain, vision or any medical condition.</p>
+        </div>
+      </details>
+      <details class="acc">
+        <summary>Where is my data stored?</summary>
+        <div class="acc-body">
+          <p>In this demo, data lives in your browser only. Nothing is sent to a
+          server. See Privacy & data for retention and deletion controls.</p>
+        </div>
+      </details>
+    </section>
+
+    <aside class="span-4 stack">
+      <section class="glass">
+        <div class="card-head">
+          <div><h2 class="card-title">About</h2><p class="card-sub">DeskSense AI demo</p></div>
+        </div>
+        <div class="stack-sm">
+          <div class="metric-row"><span class="label">Version</span><span class="value">1.4.2</span></div>
+          <div class="metric-row"><span class="label">Unit</span><span class="value">ESP8266 · Unit 01</span></div>
+          <div class="metric-row"><span class="label">Sensors</span><span class="value">5</span></div>
+          <div class="metric-row"><span class="label">Readings today</span><span class="value">480</span></div>
+        </div>
+        <p class="chart-note" style="margin-top:12px">Comfort suggestions only — not medical advice.</p>
+      </section>
+
+      <section class="glass">
+        <div class="card-head">
+          <div><h2 class="card-title">Quick links</h2></div>
+        </div>
+        <div class="stack-sm">
+          <a class="card-link" href="onboarding.html?reset=1" style="margin-top:0">Re-run workspace setup</a>
+          <a class="card-link" href="preferences.html" style="margin-top:0">Preferences</a>
+          <a class="card-link" href="privacy.html" style="margin-top:0">Privacy & data</a>
+          <a class="card-link" href="devices.html" style="margin-top:0">Devices</a>
+          <a class="card-link" href="style-guide.html" style="margin-top:0">Style guide</a>
+        </div>
+      </section>
+
+      <section class="glass">
+        <div class="card-head">
+          <div><h2 class="card-title">Feedback</h2><p class="card-sub">Tell us how it feels</p></div>
+        </div>
+        <button class="btn small" type="button" data-action="feedback" style="width:100%">Open feedback check-in</button>
+      </section>
+    </aside>
+
+    <section class="glass span-12">
+      <div class="card-head">
+        <div><h2 class="card-title">Sensor glossary</h2><p class="card-sub">What each reading means</p></div>
+      </div>
+      <div class="rec-mini-grid">
+        <div class="rec-mini"><span class="rec-mini-value">cm</span><span class="rec-mini-label">Ultrasonic distance</span></div>
+        <div class="rec-mini"><span class="rec-mini-value">0–1023</span><span class="rec-mini-label">LDR light</span></div>
+        <div class="rec-mini"><span class="rec-mini-value">°C</span><span class="rec-mini-label">Temperature</span></div>
+        <div class="rec-mini"><span class="rec-mini-value">%</span><span class="rec-mini-label">Humidity</span></div>
+        <div class="rec-mini"><span class="rec-mini-value">IR</span><span class="rec-mini-label">Presence</span></div>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="data/mock.js"></script>
+  <script src="js/layout.js"></script>
+  <script>
+    (function () {
+      "use strict";
+      var data = window.DeskSenseData;
+      document.getElementById("help-date").textContent = "Help & about · " + data.sessions[data.sessions.length - 1].date;
+    })();
+  </script>
+</body>
+</html>

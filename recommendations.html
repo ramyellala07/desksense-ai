@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Recommendations — DeskSense AI</title>
+  <meta name="description" content="DeskSense AI demo recommendations: layered cards showing the detected condition, the readings behind it, the reason, a suggested action and accept, reject or customise controls.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body data-page="recommendations">
+
+  <main id="main" class="bento page">
+
+    <!-- Intro -->
+    <header class="page-hero span-12">
+      <div>
+        <p class="eyebrow" id="rec-date">Recommendations</p>
+        <h1>Suggestions with their evidence.</h1>
+        <p class="sub">
+          Every card names the readings that triggered it. Accept, reject or adjust —
+          DeskSense never changes your room on its own.
+        </p>
+      </div>
+      <div class="hero-meta">
+        <span class="status warn" id="rec-active-count">4 active</span>
+        <span class="chip chip-static">Updated <span id="rec-updated">16:59</span></span>
+      </div>
+    </header>
+
+    <!-- Layered deck -->
+    <section class="span-8" aria-labelledby="deck-title">
+      <h2 class="sr-only" id="deck-title">Your recommendations</h2>
+      <div class="rec-deck" id="rec-deck"></div>
+      <p class="chart-note" id="deck-note">
+        The top card is expanded. Choose one of the pills above it to bring another
+        suggestion forward — nothing is accepted until you say so.
+      </p>
+      <p class="sr-only" id="rec-announcer" role="status" aria-live="polite"></p>
+    </section>
+
+    <!-- Context rail -->
+    <aside class="span-4 stack" aria-label="Recommendation context">
+
+      <section class="glass">
+        <div class="card-head">
+          <div>
+            <h2 class="card-title">Today at a glance</h2>
+            <p class="card-sub">Built from 480 one-minute readings</p>
+          </div>
+        </div>
+        <div class="rec-mini-grid">
+          <div class="rec-mini">
+            <span class="rec-mini-value" id="sum-active">4</span>
+            <span class="rec-mini-label">Active</span>
+          </div>
+          <div class="rec-mini">
+            <span class="rec-mini-value" id="sum-accepted">0</span>
+            <span class="rec-mini-label">Accepted</span>
+          </div>
+          <div class="rec-mini">
+            <span class="rec-mini-value" id="sum-aside">0</span>
+            <span class="rec-mini-label">Set aside</span>
+          </div>
+          <div class="rec-mini">
+            <span class="rec-mini-value" id="sum-learned">1</span>
+            <span class="rec-mini-label">Learned</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="glass rec-pattern-card" id="pattern-card">
+        <span class="rec-learned">Learned pattern</span>
+        <p class="rec-quote" id="pattern-note">Your posture tends to worsen after 3 p.m.</p>
+        <p class="card-sub" id="pattern-sub">
+          Compared across your own recent working days. No other data is used for this pattern.
+        </p>
+        <button class="btn ghost small" type="button" data-open-rec="rec-pattern">
+          Review the pattern
+        </button>
+      </section>
+
+      <p class="chart-note" style="margin:0 4px">
+        No camera, microphone or emotion detection is used. Check-ins are only ever your
+        own answers.
+      </p>
+    </aside>
+
+    <!-- How it works -->
+    <section class="glass span-12">
+      <div class="card-head">
+        <div>
+          <h2 class="card-title">How a suggestion is made</h2>
+          <p class="card-sub">Readings, your own ranges, then your decision</p>
+        </div>
+        <a class="card-link" href="preferences.html" style="margin-top:0">Adjust your ranges →</a>
+      </div>
+      <ol class="rec-how-grid">
+        <li>
+          <span class="rec-step-num" aria-hidden="true">1</span>
+          <strong>Sensors read the room</strong>
+          <p>Distance, ambient light, temperature, humidity and infrared presence. No camera or microphone.</p>
+        </li>
+        <li>
+          <span class="rec-step-num" aria-hidden="true">2</span>
+          <strong>Your ranges are compared</strong>
+          <p>A suggestion appears only when a reading sits outside the preferences you set.</p>
+        </li>
+        <li>
+          <span class="rec-step-num" aria-hidden="true">3</span>
+          <strong>You decide what happens</strong>
+          <p>DeskSense recommends light, breaks and ventilation. It does not control them.</p>
+        </li>
+      </ol>
+      <p class="chart-note" style="margin-top:16px">
+        No emotion detection is used anywhere in this demo. Feelings come only from your own
+        check-in, and comfort suggestions are not medical advice.
+      </p>
+    </section>
+
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1"></script>
+  <script src="data/mock.js"></script>
+  <script src="js/charts.js"></script>
+  <script src="js/layout.js"></script>
+  <script>
+    (function () {
+      "use strict";
+
+      var data = window.DeskSenseData;
+      var deck = document.getElementById("rec-deck");
+      var announcer = document.getElementById("rec-announcer");
+
+      var recs = data.getRecommendations();
+      var firstActive = recs.filter(function (r) { return r.state === "active"; })[0];
+      var frontId = (firstActive || recs[0]).id;
+      var panelOpen = false;
+      var snoozeChoice = {};
+
+      var PRIORITY = { high: "High priority", medium: "Medium priority", low: "Insight" };
+      var PRIORITY_TONE = { high: "warn", medium: "neutral", low: "good" };
+      var STATE = {
+        accepted: {
+          label: "Accepted",
+          tone: "good",
+          text: "Added to your routine. DeskSense will check in again after your next break."
+        },
+        rejected: {
+          label: "Dismissed",
+          tone: "bad",
+          text: "Hidden for the rest of today. Your sensor readings are unchanged."
+        },
+        snoozed: {
+          label: "Snoozed",
+          tone: "warn",
+          text: "Reminder saved. This suggestion will return to the top of your list later today."
+        }
+      };
+
+      function esc(value) {
+        return String(value).replace(/[&<>"']/g, function (ch) {
+          return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch];
+        });
+      }
+
+      function toneClassFor(state) {
+        if (state === "accepted") return "good";
+        if (state === "rejected") return "bad";
+        if (state === "snoozed") return "warn";
+        return "";
+      }
+
+      function stateInfo(rec) {
+        if (rec.state === "active") return null;
+        return STATE[rec.state] || { label: rec.state, tone: "", text: "Saved." };
+      }
+
+      function currentFront() {
+        recs = data.getRecommendations();
+        return recs.filter(function (r) { return r.id === frontId; })[0] || null;
+      }
+
+      function focusLater(selector) {
+        var el = document.querySelector(selector);
+        if (el) el.focus();
+      }
+
+      function announce(text) {
+        if (announcer) announcer.textContent = text;
+      }
+
+      /* ------------------------------------------------------------ card */
+      function customiseHTML(rec) {
+        var minutes = snoozeChoice[rec.id] || 25;
+        return '<div class="rec-customise" id="rec-customise-panel">' +
+          '<div class="spread">' +
+            '<h3 class="rec-label" style="margin:0">Remind me later</h3>' +
+            '<span class="chip chip-static" id="snooze-value">' + minutes + ' min</span>' +
+          '</div>' +
+          '<input type="range" id="rec-snooze" min="10" max="60" step="5" value="' + minutes +
+            '" aria-label="Minutes until this suggestion returns" aria-describedby="snooze-hint">' +
+          '<p class="chart-note" id="snooze-hint" style="margin-top:8px">' +
+            'The card returns after this delay. Nothing in your room changes.</p>' +
+          '<div class="rec-actions">' +
+            '<button class="btn small" type="button" data-act="save-snooze">Save reminder</button>' +
+            '<button class="btn ghost small" type="button" data-act="cancel-customise">Cancel</button>' +
+          '</div>' +
+        '</div>';
+      }
+
+      function cardHTML(rec, position, total) {
+        var info = stateInfo(rec);
+        var prio = PRIORITY[rec.priority] || "Suggestion";
+        var prioTone = PRIORITY_TONE[rec.priority] || "neutral";
+        var open = panelOpen && rec.state === "active";
+
+        var html = '<article class="glass rec-card" aria-labelledby="rec-heading">' +
+          '<div class="rec-card-head">' +
+            '<span class="status ' + prioTone + '">' + esc(prio) + "</span>" +
+            (rec.learned ? '<span class="rec-learned">Learned pattern</span>' : "") +
+            (rec.mode ? '<span class="chip chip-static">' + esc(rec.mode) + " mode</span>" : "") +
+            '<span class="rec-index">' + position + " of " + total + "</span>" +
+          "</div>" +
+          '<p class="eyebrow">Detected condition</p>' +
+          '<h2 class="rec-condition" id="rec-heading" tabindex="-1">' + esc(rec.condition) + "</h2>" +
+          (rec.learnedNote ? '<p class="rec-quote">“' + esc(rec.learnedNote) + "”</p>" : "") +
+          '<div class="rec-body-grid">' +
+            "<div>" +
+              '<h3 class="rec-label">Readings</h3>' +
+              '<ul class="rec-readings">' +
+                rec.readings.map(function (reading) { return "<li>" + esc(reading) + "</li>"; }).join("") +
+              "</ul>" +
+            "</div>" +
+            '<div class="rec-prose">' +
+              '<h3 class="rec-label">Why this appeared</h3>' +
+              "<p>" + esc(rec.reason) + "</p>" +
+              '<h3 class="rec-label" style="margin-top:16px">Suggested action</h3>' +
+              "<p>" + esc(rec.action) + "</p>" +
+            "</div>" +
+          "</div>";
+
+        if (rec.state === "active") {
+          html += '<div class="rec-actions">' +
+            '<button class="btn" type="button" data-act="accept">Accept</button>' +
+            '<button class="btn ghost" type="button" data-act="reject">Reject</button>' +
+            '<button class="btn ghost" type="button" data-act="customise" aria-expanded="' +
+              (open ? "true" : "false") + '">Customise</button>' +
+          "</div>";
+          if (open) html += customiseHTML(rec);
+        } else {
+          html += '<div class="rec-state ' + (info.tone || "") + '" id="rec-state" tabindex="-1">' +
+            '<div class="rec-state-body">' +
+              "<strong>" + esc(info.label) + "</strong>" +
+              "<span>" + esc(info.text) + "</span>" +
+            "</div>" +
+            '<button class="btn ghost small" type="button" data-act="undo">Undo</button>' +
+          "</div>";
+        }
+
+        return html + "</article>";
+      }
+
+      /* ---------------------------------------------------------- peeking */
+      function peekHTML(rec, step, top, z) {
+        var info = stateInfo(rec);
+        var dotTone = info ? toneClassFor(rec.state) : "";
+        var stateLabel = info ? info.label : "";
+        return '<button class="rec-peek' + (info ? " is-handled" : "") + '" type="button"' +
+          ' data-open-rec="' + esc(rec.id) + '"' +
+          ' style="top:' + top + "px;left:calc(var(--peek-step) * " + step + ");right:calc(var(--peek-step) * " + step + ");z-index:" + z + '">' +
+          '<span class="rec-peek-dot ' + dotTone + '" aria-hidden="true"></span>' +
+          '<span class="rec-peek-title">' + esc(rec.condition) + "</span>" +
+          (stateLabel ? '<span class="rec-peek-state">' + esc(stateLabel) + "</span>" : "") +
+          '<span class="sr-only"> — open this recommendation</span>' +
+        "</button>";
+      }
+
+      /* ----------------------------------------------------------- render */
+      function render() {
+        recs = data.getRecommendations();
+
+        var front = recs.filter(function (r) { return r.id === frontId; })[0];
+        if (!front) {
+          front = recs.filter(function (r) { return r.state === "active"; })[0] || recs[0];
+          frontId = front.id;
+        }
+
+        var others = recs.filter(function (r) { return r.id !== front.id; });
+        var n = others.length;
+        var peeks = others.map(function (rec, k) {
+          return peekHTML(rec, k + 1, (n - 1 - k) * 36, n - k);
+        }).join("");
+
+        deck.style.paddingTop = (n * 36 + 6) + "px";
+        deck.innerHTML = peeks + cardHTML(front, recs.indexOf(front) + 1, recs.length);
+
+        updateSummary();
+      }
+
+      function updateSummary() {
+        var active = recs.filter(function (r) { return r.state === "active"; }).length;
+        var accepted = recs.filter(function (r) { return r.state === "accepted"; }).length;
+        var aside = recs.filter(function (r) {
+          return r.state === "rejected" || r.state === "snoozed";
+        }).length;
+
+        document.getElementById("sum-active").textContent = active;
+        document.getElementById("sum-accepted").textContent = accepted;
+        document.getElementById("sum-aside").textContent = aside;
+
+        var badge = document.getElementById("rec-active-count");
+        badge.textContent = active + (active === 1 ? " active" : " active");
+        badge.className = "status " + (active ? "warn" : "good");
+      }
+
+      /* --------------------------------------------------------- actions */
+      function applyState(rec, state, toastHTML) {
+        data.setRecommendationState(rec.id, state);
+        panelOpen = false;
+        render();
+        if (window.DeskSenseLayout) window.DeskSenseLayout.toast(toastHTML);
+        focusLater("#rec-state");
+      }
+
+      function openRec(id) {
+        var target = null;
+        recs.some(function (r) { if (r.id === id) { target = r; return true; } return false; });
+        if (!target) return;
+        frontId = id;
+        panelOpen = false;
+        render();
+        announce(target.condition + " opened. " + target.readings.join(". ") + ".");
+        focusLater("#rec-heading");
+      }
+
+      document.addEventListener("click", function (event) {
+        var target = event.target;
+        if (!(target instanceof Element)) return;
+
+        var opener = target.closest("[data-open-rec]");
+        if (opener) {
+          event.preventDefault();
+          openRec(opener.getAttribute("data-open-rec"));
+          return;
+        }
+
+        var actionEl = target.closest("[data-act]");
+        if (!actionEl) return;
+        var action = actionEl.getAttribute("data-act");
+        var rec = currentFront();
+        if (!rec) return;
+
+        if (action === "accept") {
+          applyState(rec, "accepted",
+            "<strong>Recommendation accepted.</strong> DeskSense will check in after your next break.");
+          announce("Accepted: " + rec.condition + ". Added to your routine.");
+          return;
+        }
+
+        if (action === "reject") {
+          applyState(rec, "rejected",
+            "<strong>Recommendation dismissed.</strong> It will not be shown again today.");
+          announce("Dismissed: " + rec.condition + ". Hidden for the rest of today.");
+          return;
+        }
+
+        if (action === "customise") {
+          panelOpen = !panelOpen;
+          render();
+          if (panelOpen) focusLater("#rec-snooze");
+          return;
+        }
+
+        if (action === "cancel-customise") {
+          panelOpen = false;
+          render();
+          focusLater('[data-act="customise"]');
+          return;
+        }
+
+        if (action === "save-snooze") {
+          var slider = document.getElementById("rec-snooze");
+          var minutes = slider ? Number(slider.value) : 25;
+          snoozeChoice[rec.id] = minutes;
+          applyState(rec, "snoozed",
+            "<strong>Snoozed for " + minutes + " minutes.</strong> The card will return later today.");
+          announce("Snoozed: " + rec.condition + " for " + minutes + " minutes.");
+          return;
+        }
+
+        if (action === "undo") {
+          data.setRecommendationState(rec.id, "active");
+          panelOpen = false;
+          render();
+          if (window.DeskSenseLayout) {
+            window.DeskSenseLayout.toast("<strong>Undone.</strong> " + esc(rec.condition) + " is active again.");
+          }
+          announce("Restored: " + rec.condition + " is active again.");
+          focusLater("#rec-heading");
+        }
+      });
+
+      deck.addEventListener("input", function (event) {
+        var slider = event.target;
+        if (!slider || slider.id !== "rec-snooze") return;
+        snoozeChoice[frontId] = Number(slider.value);
+        var out = document.getElementById("snooze-value");
+        if (out) out.textContent = slider.value + " min";
+      });
+
+      /* ------------------------------------------------------- static bits */
+      var today = data.sessions[data.sessions.length - 1];
+      document.getElementById("rec-date").textContent = "Recommendations · " + today.date;
+      document.getElementById("rec-updated").textContent = data.derived.lastReading.time;
+
+      var pattern = recs.filter(function (r) { return r.learned; })[0];
+      if (pattern) {
+        document.getElementById("pattern-note").textContent =
+          pattern.learnedNote || pattern.condition;
+        document.getElementById("pattern-sub").textContent = pattern.reason;
+      } else {
+        document.getElementById("pattern-card").hidden = true;
+      }
+
+      render();
+    })();
+  </script>
+</body>
+</html>

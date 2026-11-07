@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Privacy & data — DeskSense AI</title>
+  <meta name="description" content="DeskSense AI demo privacy: what is stored, retention, schedule and data controls.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body data-page="privacy">
+
+  <main id="main" class="bento page">
+
+    <header class="page-hero span-12">
+      <div>
+        <p class="eyebrow" id="pri-date">Privacy & data</p>
+        <h1>Your data stays yours.</h1>
+        <p class="sub">
+          DeskSense stores numeric sensor readings only. No images, no audio,
+          no emotion labels. Feelings only ever come from your own check-ins.
+        </p>
+      </div>
+      <div class="hero-meta">
+        <span class="status good">Local only</span>
+        <span class="chip chip-static">Demo data</span>
+      </div>
+    </header>
+
+    <section class="glass span-6">
+      <div class="card-head">
+        <div><h2 class="card-title">What is stored</h2><p class="card-sub">Minute-by-minute, numeric only</p></div>
+      </div>
+      <ul class="mark-list yes">
+        <li><span class="mark" aria-hidden="true">✓</span>Screen distance (cm)</li>
+        <li><span class="mark" aria-hidden="true">✓</span>Ambient light (0–1023)</li>
+        <li><span class="mark" aria-hidden="true">✓</span>Temperature (°C) and humidity (%)</li>
+        <li><span class="mark" aria-hidden="true">✓</span>IR presence (at desk / away)</li>
+        <li><span class="mark" aria-hidden="true">✓</span>Your own check-in answers</li>
+      </ul>
+      <ul class="mark-list no" style="margin-top:10px">
+        <li><span class="mark" aria-hidden="true">✕</span>Camera images or video</li>
+        <li><span class="mark" aria-hidden="true">✕</span>Microphone audio or voice</li>
+        <li><span class="mark" aria-hidden="true">✕</span>Facial emotion labels</li>
+        <li><span class="mark" aria-hidden="true">✕</span>Any data shared with other users</li>
+      </ul>
+    </section>
+
+    <section class="glass span-6">
+      <div class="card-head">
+        <div><h2 class="card-title">Retention and schedule</h2><p class="card-sub">Configured during setup</p></div>
+      </div>
+      <div class="settings-group">
+        <div class="row-pill">
+          <div class="row-main"><span class="row-title">Keep readings for</span><span class="row-sub">Older minute-by-minute readings are removed</span></div>
+          <div class="row-side">
+            <div class="segmented" role="group" aria-label="Data retention">
+              <button type="button" data-days="7" aria-pressed="false">7 days</button>
+              <button type="button" data-days="30" class="active" aria-pressed="true">30 days</button>
+              <button type="button" data-days="90" aria-pressed="false">90 days</button>
+            </div>
+          </div>
+        </div>
+        <div class="row-pill">
+          <div class="row-main"><span class="row-title">Monitoring schedule</span><span class="row-sub">Readings stored only during these hours</span></div>
+          <div class="row-side">
+            <span class="value">09:00 – 17:00</span>
+          </div>
+        </div>
+        <div class="row-pill">
+          <div class="row-main"><span class="row-title">Pause outside hours</span><span class="row-sub">The desk unit keeps its clock but stores nothing</span></div>
+          <div class="row-side"><button class="toggle on" type="button" role="switch" aria-checked="true" aria-label="Pause outside hours"></button></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="glass span-6">
+      <div class="card-head">
+        <div><h2 class="card-title">Your controls</h2><p class="card-sub">Manage your data</p></div>
+      </div>
+      <div class="stack-sm">
+        <button class="btn ghost" type="button" id="export-data">Export my data</button>
+        <button class="btn ghost" type="button" id="clear-recs">Clear recommendation history</button>
+        <button class="btn danger" type="button" id="delete-data">Delete all stored data</button>
+      </div>
+      <p class="chart-note" style="margin-top:12px">In this demo, data lives in your browser. Nothing is sent to a server.</p>
+    </section>
+
+    <section class="glass span-6">
+      <div class="card-head">
+        <div><h2 class="card-title">Permissions</h2><p class="card-sub">What DeskSense may do</p></div>
+      </div>
+      <div class="settings-group">
+        <div class="row-pill">
+          <div class="row-main"><span class="row-title">Switch lamp or fan</span><span class="row-sub">Never without your approval</span></div>
+          <div class="row-side"><span class="status bad">Off</span></div>
+        </div>
+        <div class="row-pill">
+          <div class="row-main"><span class="row-title">Send break reminders</span><span class="row-sub">Movement prompts after long sitting</span></div>
+          <div class="row-side"><span class="status good">On</span></div>
+        </div>
+        <div class="row-pill">
+          <div class="row-main"><span class="row-title">Learn personal patterns</span><span class="row-sub">From your own readings only</span></div>
+          <div class="row-side"><span class="status good">On</span></div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="data/mock.js"></script>
+  <script src="js/layout.js"></script>
+  <script>
+    (function () {
+      "use strict";
+      var data = window.DeskSenseData;
+
+      function $(id) { return document.getElementById(id); }
+
+      document.querySelectorAll(".toggle").forEach(function (t) {
+        t.addEventListener("click", function () {
+          var on = t.classList.toggle("on");
+          t.setAttribute("aria-checked", String(on));
+        });
+      });
+
+      document.querySelectorAll("[data-days]").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          document.querySelectorAll("[data-days]").forEach(function (o) {
+            var on = o === btn;
+            o.classList.toggle("active", on);
+            o.setAttribute("aria-pressed", String(on));
+          });
+        });
+      });
+
+      function toast(msg) { if (window.DeskSenseLayout) window.DeskSenseLayout.toast(msg); }
+
+      $("export-data").addEventListener("click", function () {
+        toast("<strong>Export started.</strong> A JSON file of your readings would download here.");
+      });
+      $("clear-recs").addEventListener("click", function () {
+        try { localStorage.removeItem("desksense.recs"); } catch (e) {}
+        toast("<strong>Recommendation history cleared.</strong>");
+      });
+      $("delete-data").addEventListener("click", function () {
+        toast("<strong>All stored data removed</strong> (demo: nothing was actually deleted).");
+      });
+
+      $("pri-date").textContent = "Privacy & data · " + data.sessions[data.sessions.length - 1].date;
+    })();
+  </script>
+</body>
+</html>
